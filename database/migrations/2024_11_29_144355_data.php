@@ -11,7 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //
+        Schema::create('data', function (Blueprint $table) {
+            $table->string('id_data')->primary();
+            $table->string('id_admin',16);
+            $table->string('provinsi', 100);
+            $table->string('kab_kota',100);
+            $table->float('presentase_pm');
+            $table->decimal('pengeluaran_perkapita',16,0);
+            $table->float('tingkat_pengangguran');
+            $table->string('klasifikasi_kemiskinan',255);
+            $table->timestamps();
+        });
     }
 
     /**
@@ -19,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('data');
     }
 };
