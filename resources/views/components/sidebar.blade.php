@@ -22,15 +22,15 @@
     <nav>
         <ul class="space-y-4">
             <li>
-                <a href="{{ route('dashboard') }}"
+                <a href="{{route('dashboard') }}"
                     class="block text-2xl text-gray-800 font-medium hover:bg-[#DAB89C] py-2 px-4 rounded-lg">
                     <i class="fa fa-home"></i> Dashboard
                 </a>
             </li>
             <li>
-                <a href="#"
+                <a href="{{route('data.index')}}"
                     class="block text-2xl text-gray-800 font-medium hover:bg-[#DAB89C] py-2 px-4 rounded-lg">
-                    <i class="fa fa-cog"></i> Kelola Sistem
+                    <i class="fa fa-database"></i> Kelola Data
                 </a>
             </li>
             <li>

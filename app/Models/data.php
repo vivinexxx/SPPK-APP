@@ -12,6 +12,24 @@ class data extends Model
     protected $primaryKey = 'id_data';
     public $incrementing = false;
     protected $keyType = 'string';
+    
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($data) {
+            $latestData = static::latest('id_data')->first();
+
+            if (!$latestData) {
+                $nextIdNumber = 1;
+            } else {
+                $lastId = (int) str_replace('DT', '', $latestData->id_data);
+                $nextIdNumber = $lastId + 1;
+            }
+
+            $data->id_data = 'ADM' . $nextIdNumber;
+        });
+    }
 
     protected $fillable = [
         'id_data',
@@ -23,11 +41,6 @@ class data extends Model
         'tingkat_pengangguran',
         'klasifikasi_kemiskinan',
     ];
-
-    public function admin()
-    {
-        return $this->belongsTo(Admin::class, 'id_admin', 'id_admin');
-    }
 
     public function analisis()
     {

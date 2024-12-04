@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('data', function (Blueprint $table) {
             $table->string('id_data')->primary();
-            $table->string('id_admin',16);
             $table->string('provinsi', 100);
             $table->string('kab_kota',100);
             $table->float('presentase_pm');

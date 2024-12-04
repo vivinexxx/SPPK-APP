@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\DataController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,9 +24,17 @@ Route::get('/dashboard', function () {
 })->middleware(['auth'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    // Route untuk Kelola Sistem
+    Route::get('/data', [DataController::class, 'index'])->name('data.index');
+    Route::post('/data', [DataController::class, 'store'])->name('data.store');
+    Route::get('/data/{id}/edit', [DataController::class, 'edit'])->name('data.edit');
+    Route::patch('/data/{id}', [DataController::class, 'update'])->name('data.update');
+    Route::delete('/data/{id}', [DataController::class, 'destroy'])->name('data.destroy');
+
+    // Route untuk Profil Pengguna
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
