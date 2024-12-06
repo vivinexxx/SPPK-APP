@@ -9,8 +9,16 @@ use App\Models\Analisis;
 use Illuminate\Support\Facades\DB;
 class DataController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $query = $request->input('search');
+        $data = Data::query()
+            ->when($query, function ($q) use ($query) {
+                $q->where('provinsi', 'like', "%{$query}%")
+                    ->orWhere('kab_kota', 'like', "%{$query}%");
+            })
+            ->paginate(10); // Anda bisa menyesuaikan paginasi
+        $data = Data::paginate(1); // 10 adalah jumlah item per halaman
         $lastData = Data::latest('id_data')->first();
         $nextId = $lastData ? intval(substr($lastData->id_data, 3)) + 1 : 1;
         $newId = 'DT' . str_pad($nextId, 3, '0', STR_PAD_LEFT);
