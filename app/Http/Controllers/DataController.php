@@ -19,8 +19,8 @@ class DataController extends Controller
         $analisis = Analisis::all();
 
         // Hitung jumlah miskin dan kaya
-        $jumlahMiskin = $data->where('klasifikasi', 'Miskin')->count();
-        $jumlahTidakMiskin = $data->where('klasifikasi', 'Tidak Miskin')->count();
+        $jumlahMiskin = $data->where('klasifikasi_kemiskinan', 'Miskin')->count();
+        $jumlahTidakMiskin = $data->where('klasifikasi_kemiskinan', 'Tidak Miskin')->count();
 
         return view('data.index', compact('newId', 'data', 'analisis', 'jumlahMiskin', 'jumlahTidakMiskin'));
     }
@@ -28,29 +28,39 @@ class DataController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'provinsi' => 'required|string|max:255',
-            'kab_kota' => 'required|string|max:255',
-            'persentase_miskin' => 'required|numeric',
-            'pengeluaran' => 'required|numeric',
-            'tingkat_pengangguran' => 'required|numeric',
-            'klasifikasi' => 'required|string',
+            'provinsi' => 'required|string|max:100',
+            'kab_kota' => 'required|string|max:100',
+            'persentase_pm' => 'required|numeric|between:0,99.99',
+            'pengeluaran_perkapita' => 'required|numeric|digits_between:1,16',
+            'tingkat_pengangguran' => 'required|numeric|between:0,99.99',
+            'klasifikasi_kemiskinan' => 'required|string|max:255',
         ]);
+
 
         Data::create($request->all());
 
         return redirect()->route('data.index')->with('success', 'Data berhasil ditambahkan.');
     }
-
-    public function edit($id)
+    public function create()
     {
-        $Data = Data::findOrFail($id);
+        $lastData = Data::latest('id_data')->first();
+        $nextId = $lastData ? intval(substr($lastData->id_data, 3)) + 1 : 1;
+        $newId = 'DT' . str_pad($nextId, 3, '0', STR_PAD_LEFT);
+
+        return view('data.create', compact('newId'));
+    }
+
+
+    public function edit($id_data)
+    {
+        $Data = Data::findOrFail($id_data);
 
         return view('data.edit', compact('Data'));
     }
 
-    public function destroy($id)
+    public function destroy($id_data)
     {
-        $Data = Data::findOrFail($id);
+        $Data = Data::findOrFail($id_data);
         $Data->delete();
 
         return redirect()->route('data.index')->with('success', 'Data berhasil dihapus.');

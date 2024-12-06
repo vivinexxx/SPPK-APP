@@ -17,8 +17,6 @@
                 <!-- Gambar di samping teks -->
                 <img src="{{ asset('image/image 2.png') }}" alt="Dashboard Illustration"
                     class="w-75 h-22l mr-4">
-
-
             </div>
         </main>
     </div>

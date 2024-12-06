@@ -26,10 +26,11 @@ Route::get('/dashboard', function () {
 Route::middleware('auth')->group(function () {
     // Route untuk Kelola Sistem
     Route::get('/data', [DataController::class, 'index'])->name('data.index');
-    Route::post('/data', [DataController::class, 'store'])->name('data.store');
-    Route::get('/data/{id}/edit', [DataController::class, 'edit'])->name('data.edit');
-    Route::patch('/data/{id}', [DataController::class, 'update'])->name('data.update');
-    Route::delete('/data/{id}', [DataController::class, 'destroy'])->name('data.destroy');
+    Route::post('/data', [DataController::class, 'store'])->name('data.store');    
+    Route::post('/data', [DataController::class, 'create'])->name('data.create');
+    Route::get('/data/{id_data}/edit', [DataController::class, 'edit'])->name('data.edit');
+    Route::patch('/data/{id_data}', [DataController::class, 'update'])->name('data.update');
+    Route::delete('/data/{id_data}', [DataController::class, 'destroy'])->name('data.destroy');
 
     // Route untuk Profil Pengguna
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
