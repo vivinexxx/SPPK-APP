@@ -34,6 +34,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/data/create', [DataController::class, 'create'])->name('data.create');
     Route::post('/data', [DataController::class, 'store'])->name('data.store');
     
+    
     // Route untuk Profil Pengguna
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

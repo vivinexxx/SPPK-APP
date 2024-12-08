@@ -12,26 +12,65 @@ class DataController extends Controller
     public function index(Request $request)
     {
         $query = $request->input('search');
-        $data = Data::query()
-            ->when($query, function ($q) use ($query) {
-                $q->where('provinsi', 'like', "%{$query}%")
-                    ->orWhere('kab_kota', 'like', "%{$query}%");
-            })
-            ->paginate(10); // Anda bisa menyesuaikan paginasi
-        $data = Data::paginate(1); // 10 adalah jumlah item per halaman
-        $lastData = Data::latest('id_data')->first();
-        $nextId = $lastData ? intval(substr($lastData->id_data, 3)) + 1 : 1;
-        $newId = 'DT' . str_pad($nextId, 3, '0', STR_PAD_LEFT);
+        $perPage = $request->input('per_page', 10); // Default 10 baris per halaman
 
-        $data = Data::with(['analisis'])->get();
-        $analisis = Analisis::all();
+        // Jika pengguna memilih "Tampilkan Semua"
+        if ($perPage == 'all') {
+            $data = Data::query()
+                ->when($query, function ($q) use ($query) {
+                    $q->where('provinsi', 'like', "%{$query}%")
+                        ->orWhere('kab_kota', 'like', "%{$query}%");
+                })
+                ->orderBy('provinsi', 'asc') // Urutkan berdasarkan provinsi
+                ->get(); // Ambil semua data
+        } else {
+            // Filter data dengan pencarian jika ada
+            $data = Data::query()
+                ->when($query, function ($q) use ($query) {
+                    $q->where('provinsi', 'like', "%{$query}%")
+                        ->orWhere('kab_kota', 'like', "%{$query}%");
+                })
+                ->orderBy('provinsi', 'asc') // Urutkan berdasarkan provinsi
+                ->paginate($perPage); // Paginasi sesuai jumlah baris per halaman
+        }
 
-        // Hitung jumlah miskin dan kaya
-        $jumlahMiskin = $data->where('klasifikasi_kemiskinan', 'Miskin')->count();
-        $jumlahTidakMiskin = $data->where('klasifikasi_kemiskinan', 'Tidak Miskin')->count();
+        // Hitung jumlah miskin dan tidak miskin dari semua data
+        $jumlahMiskin = Data::where('klasifikasi_kemiskinan', 'Miskin')->count();
+        $jumlahTidakMiskin = Data::where('klasifikasi_kemiskinan', 'Tidak Miskin')->count();
 
-        return view('data.index', compact('newId', 'data', 'analisis', 'jumlahMiskin', 'jumlahTidakMiskin'));
+        // Jika permintaan adalah AJAX, hanya render tabel saja
+        if ($request->ajax()) {
+            return view('data.table', compact('data'));
+        }
+
+        // Render halaman utama
+        return view('data.index', compact('data', 'jumlahMiskin', 'jumlahTidakMiskin'));
     }
+
+
+    // public function index(Request $request)
+    // {
+    //     $query = $request->input('search');
+    //     $data = Data::query()
+    //         ->when($query, function ($q) use ($query) {
+    //             $q->where('provinsi', 'like', "%{$query}%")
+    //                 ->orWhere('kab_kota', 'like', "%{$query}%");
+    //         })
+    //         ->paginate(10); // Anda bisa menyesuaikan paginasi
+    //     $data = Data::paginate(1); // 10 adalah jumlah item per halaman
+    //     $lastData = Data::latest('id_data')->first();
+    //     $nextId = $lastData ? intval(substr($lastData->id_data, 3)) + 1 : 1;
+    //     $newId = 'DT' . str_pad($nextId, 3, '0', STR_PAD_LEFT);
+
+    //     $data = Data::with(['analisis'])->get();
+    //     $analisis = Analisis::all();
+
+    //     // Hitung jumlah miskin dan kaya
+    //     $jumlahMiskin = $data->where('klasifikasi_kemiskinan', 'Miskin')->count();
+    //     $jumlahTidakMiskin = $data->where('klasifikasi_kemiskinan', 'Tidak Miskin')->count();
+
+    //     return view('data.index', compact('newId', 'data', 'analisis', 'jumlahMiskin', 'jumlahTidakMiskin'));
+    // }
 
     public function store(Request $request)
     {

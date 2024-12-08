@@ -12,7 +12,7 @@ class data extends Model
     protected $primaryKey = 'id_data';
     public $incrementing = false;
     protected $keyType = 'string';
-    
+
     protected static function boot()
     {
         parent::boot();
@@ -41,9 +41,25 @@ class data extends Model
         'tingkat_pengangguran',
         'klasifikasi_kemiskinan',
     ];
+    public function up()
+    {
+        Schema::create('data', function (Blueprint $table) {
+            $table->id('id_data');
+            $table->string('provinsi');
+            $table->string('kab_kota');
+            $table->decimal('persentase_pm', 5, 2);
+            $table->decimal('pengeluaran_perkapita', 16, 2);
+            $table->decimal('tingkat_pengangguran', 5, 2);
+            $table->string('klasifikasi_kemiskinan');
+            $table->timestamps();
+        });
+    }
+
 
     public function analisis()
     {
         return $this->hasMany(Analisis::class, 'id_data', 'id_data');
     }
+
+
 }
