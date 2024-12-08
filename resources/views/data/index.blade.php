@@ -5,6 +5,37 @@
         /* Sesuaikan tinggi maksimal tabel sesuai kebutuhan */
         overflow-y: auto;
         /* Hanya scroll tabel vertikal */
+        position: relative;
+        /* Membuat container menjadi posisi relatif */
+    }
+
+    /* Memastikan header tabel tetap terlihat */
+    table thead th {
+        position: sticky;
+        top: 0;
+        /* Menjaga posisi header tetap di atas saat di-scroll */
+        background-color: #f3f4f6;
+        /* Warna latar belakang header */
+        z-index: 1;
+        /* Pastikan header berada di atas konten tabel */
+    }
+
+    th,
+    td {
+        text-align: left;
+        padding: 8px;
+        border: 1px solid #ddd;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    th {
+        font-weight: bold;
+    }
+
+    td {
+        background-color: #fff;
     }
 
     /* Jika Anda ingin mengatur tinggi sidebar agar tetap di tempat */
@@ -33,28 +64,6 @@
         margin-top: 10px;
     }
 
-    th,
-    td {
-        width: 12%;
-        text-align: left;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        /* Potong teks dengan elipsis jika terlalu panjang */
-        padding: 8px;
-        border: 1px solid #ddd;
-    }
-
-    th {
-        background-color: #f3f4f6;
-        font-weight: bold;
-        text-align: center;
-    }
-
-    td {
-        background-color: #fff;
-    }
-
     /* Gaya tambahan untuk pencarian */
     #search-bar {
         width: 100%;
@@ -69,16 +78,6 @@
         font-size: 14px;
         color: gray;
     }
-
-    .table-container {
-        overflow-y: auto;
-        max-height: 500px;
-        /* Sesuaikan tinggi maksimal tabel sesuai kebutuhan */
-        border: 1px solid #ddd;
-        /* Opsional, untuk batas */
-        border-radius: 4px;
-        /* Opsional, untuk tampilan lebih menarik */
-    }
 </style>
 
 <x-app-layout>
@@ -92,7 +91,6 @@
             <div class="mb-4">
                 <h1 class="text-4xl font-extrabold text-[#CEAB93]">Kelola Data</h1>
             </div>
-
 
             <!-- Tombol Tambah Data -->
             <div class="mb-4">
@@ -135,24 +133,9 @@
                         <option value="all" {{ request()->input('per_page') == 'all' ? 'selected' : '' }}>Tampilkan Semua
                         </option>
                     </select>
-
-                    <span class="text-gray-600">baris per halaman</span>
+                    <span class="text-gray-600">baris</span>
                 </div>
             </div>
-
-
-
-
-            <script>
-                function updateRowsPerPage() {
-                    const perPage = document.getElementById('rows-per-page').value;
-                    const url = new URL(window.location.href);
-                    url.searchParams.set('per_page', perPage);
-                    window.location.href = url.toString();
-                }
-            </script>
-
-
 
             <!-- Modal -->
             <div id="modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
@@ -213,37 +196,43 @@
                 </div>
             </div>
 
-            <!-- Script -->
-            <script>
-                const openModalButton = document.getElementById('openModalButton');
-                const closeModalButton = document.getElementById('closeModalButton');
-                const modal = document.getElementById('modal');
-
-                openModalButton.addEventListener('click', () => {
-                    modal.classList.remove('hidden');
-                });
-
-                closeModalButton.addEventListener('click', () => {
-                    modal.classList.add('hidden');
-                });
-
-                window.addEventListener('click', (e) => {
-                    if (e.target === modal) {
-                        modal.classList.add('hidden');
-                    }
-                });
-            </script>
-
             <!-- Tabel Data -->
             <div class="overflow-x-auto table-container">
                 @include('data.table', ['data' => $data])
             </div>
 
-
-
-
         </main>
     </div>
+
+    <script>
+        function updateRowsPerPage() {
+            const perPage = document.getElementById('rows-per-page').value;
+            const url = new URL(window.location.href);
+            url.searchParams.set('per_page', perPage);
+            window.location.href = url.toString();
+        }
+    </script>
+
+
+    <script>
+        const openModalButton = document.getElementById('openModalButton');
+        const closeModalButton = document.getElementById('closeModalButton');
+        const modal = document.getElementById('modal');
+
+        openModalButton.addEventListener('click', () => {
+            modal.classList.remove('hidden');
+        });
+
+        closeModalButton.addEventListener('click', () => {
+            modal.classList.add('hidden');
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.add('hidden');
+            }
+        });
+    </script>
 
     <script>
         document.getElementById('search-bar').addEventListener('input', function () {
@@ -284,6 +273,7 @@
             window.location.href = url.toString();
         });
     </script>
+
     <script>
         document.getElementById('search-bar').addEventListener('input', function () {
             const query = this.value;

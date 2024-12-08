@@ -1,5 +1,3 @@
-<!-- resources/views/sidebar.blade.php -->
-
 <!DOCTYPE html>
 <html lang="en">
 

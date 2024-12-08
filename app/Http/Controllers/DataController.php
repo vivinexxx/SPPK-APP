@@ -46,8 +46,7 @@ class DataController extends Controller
         // Render halaman utama
         return view('data.index', compact('data', 'jumlahMiskin', 'jumlahTidakMiskin'));
     }
-
-
+    
     // public function index(Request $request)
     // {
     //     $query = $request->input('search');

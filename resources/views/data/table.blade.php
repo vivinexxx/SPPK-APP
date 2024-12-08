@@ -1,4 +1,11 @@
 <div class="table-container">
+    <!-- Pagination -->
+    @if ($data instanceof \Illuminate\Pagination\Paginator || $data instanceof \Illuminate\Pagination\LengthAwarePaginator)
+        <div class="pagination-container mt-4">
+            {{ $data->appends(request()->input())->links('pagination::tailwind') }}
+        </div>
+    @endif
+
     <table class="table-auto w-full border border-gray-300">
         <thead>
             <tr>
@@ -26,7 +33,8 @@
                         <a href="{{ route('data.edit', $item->id_data) }}" class="text-yellow-600 hover:underline">
                             <i class="fa fa-edit"></i>
                         </a>
-                        <form action="{{ route('data.destroy', $item->id_data) }}" method="POST" style="display: inline-block;">
+                        <form action="{{ route('data.destroy', $item->id_data) }}" method="POST"
+                            style="display: inline-block;">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="text-red-600 hover:underline"
@@ -45,4 +53,5 @@
             @endforelse
         </tbody>
     </table>
+    
 </div>
