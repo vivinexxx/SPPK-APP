@@ -78,6 +78,17 @@
         font-size: 14px;
         color: gray;
     }
+
+    .pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+    font-size: 14px;
+    flex-wrap: wrap; /* Responsif untuk layar kecil */
+}
+
 </style>
 
 <x-app-layout>
@@ -200,7 +211,14 @@
             <div class="overflow-x-auto table-container">
                 @include('data.table', ['data' => $data])
             </div>
-
+            <!-- Pagination -->
+            @if ($data instanceof \Illuminate\Pagination\Paginator || $data instanceof \Illuminate\Pagination\LengthAwarePaginator)
+                <div class="pagination-container mt-4">
+                    <!-- Menggunakan pagination bawaan dengan tema Tailwind -->
+                    {{ $data->appends(request()->input())->links('pagination::tailwind') }}
+                    
+                </div>
+            @endif
         </main>
     </div>
 
