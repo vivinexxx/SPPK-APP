@@ -1,94 +1,94 @@
 <style>
-    /* Menambahkan scroll khusus untuk tabel */
-    .table-container {
-        max-height: 400px;
-        /* Sesuaikan tinggi maksimal tabel sesuai kebutuhan */
-        overflow-y: auto;
-        /* Hanya scroll tabel vertikal */
-        position: relative;
-        /* Membuat container menjadi posisi relatif */
-    }
+/* Menambahkan scroll khusus untuk tabel */
+.table-container {
+    max-height: 400px;
+    /* Sesuaikan tinggi maksimal tabel sesuai kebutuhan */
+    overflow-y: auto;
+    /* Hanya scroll tabel vertikal */
+    position: relative;
+    /* Membuat container menjadi posisi relatif */
+}
 
-    /* Memastikan header tabel tetap terlihat */
-    table thead th {
-        position: sticky;
-        top: 0;
-        /* Menjaga posisi header tetap di atas saat di-scroll */
-        background-color: #f3f4f6;
-        /* Warna latar belakang header */
-        z-index: 1;
-        /* Pastikan header berada di atas konten tabel */
-    }
+/* Memastikan header tabel tetap terlihat */
+table thead th {
+    position: sticky;
+    top: 0;
+    /* Menjaga posisi header tetap di atas saat di-scroll */
+    background-color: #f3f4f6;
+    /* Warna latar belakang header */
+    z-index: 1;
+    /* Pastikan header berada di atas konten tabel */
+}
 
-    th,
-    td {
-        text-align: left;
-        padding: 8px;
-        border: 1px solid #ddd;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+th,
+td {
+    text-align: left;
+    padding: 8px;
+    border: 1px solid #ddd;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
-    th {
-        font-weight: bold;
-    }
+th {
+    font-weight: bold;
+}
 
-    td {
-        background-color: #fff;
-    }
+td {
+    background-color: #fff;
+}
 
-    /* Jika Anda ingin mengatur tinggi sidebar agar tetap di tempat */
-    .x-sidebar {
-        position: sticky;
-        top: 0;
-        height: 100vh;
-        overflow-y: auto;
-        background-color: #f8f9fa;
-    }
+/* Jika Anda ingin mengatur tinggi sidebar agar tetap di tempat */
+.x-sidebar {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    background-color: #f8f9fa;
+}
 
-    /* Konten utama */
-    main {
-        display: flex;
-        flex-direction: column;
-        overflow-y: auto;
-        height: 100vh;
-    }
+/* Konten utama */
+main {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    height: 100vh;
+}
 
-    /* Tata letak tabel */
-    table {
-        width: 100%;
-        table-layout: fixed;
-        /* Lebar kolom tetap */
-        border-collapse: collapse;
-        margin-top: 10px;
-    }
+/* Tata letak tabel */
+table {
+    width: 100%;
+    table-layout: fixed;
+    /* Lebar kolom tetap */
+    border-collapse: collapse;
+    margin-top: 10px;
+}
 
-    /* Gaya tambahan untuk pencarian */
-    #search-bar {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-    }
+/* Gaya tambahan untuk pencarian */
+#search-bar {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
 
-    .loading-spinner {
-        display: none;
-        text-align: center;
-        font-size: 14px;
-        color: gray;
-    }
+.loading-spinner {
+    display: none;
+    text-align: center;
+    font-size: 14px;
+    color: gray;
+}
 
-    .pagination-container {
+.pagination-container {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 8px;
     margin-top: 20px;
     font-size: 14px;
-    flex-wrap: wrap; /* Responsif untuk layar kecil */
+    flex-wrap: wrap;
+    /* Responsif untuk layar kecil */
 }
-
 </style>
 
 <x-app-layout>
@@ -141,7 +141,8 @@
                         <option value="10" {{ request()->input('per_page') == 10 ? 'selected' : '' }}>10</option>
                         <option value="20" {{ request()->input('per_page') == 20 ? 'selected' : '' }}>20</option>
                         <option value="50" {{ request()->input('per_page') == 50 ? 'selected' : '' }}>50</option>
-                        <option value="all" {{ request()->input('per_page') == 'all' ? 'selected' : '' }}>Tampilkan Semua
+                        <option value="all" {{ request()->input('per_page') == 'all' ? 'selected' : '' }}>Tampilkan
+                            Semua
                         </option>
                     </select>
                     <span class="text-gray-600">baris</span>
@@ -183,7 +184,8 @@
 
                         <div class="mb-4">
                             <label for="pengeluaran_perkapita"
-                                class="block text-sm font-medium text-gray-700">Pengeluaran per Kapita (Rupiah)</label>
+                                class="block text-sm font-medium text-gray-700">Pengeluaran
+                                per Kapita (Rupiah)</label>
                             <input type="number" name="pengeluaran_perkapita" id="pengeluaran_perkapita" required
                                 placeholder="Masukkan pengeluaran per kapita"
                                 class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#CEAB93] focus:border-transparent transition-all duration-300">
@@ -212,121 +214,112 @@
                 @include('data.table', ['data' => $data])
             </div>
             <!-- Pagination -->
-            @if ($data instanceof \Illuminate\Pagination\Paginator || $data instanceof \Illuminate\Pagination\LengthAwarePaginator)
-                <div class="pagination-container mt-4">
-                    <!-- Menggunakan pagination bawaan dengan tema Tailwind -->
-                    {{ $data->appends(request()->input())->links('pagination::tailwind') }}
-                    
-                </div>
+            @if ($data instanceof \Illuminate\Pagination\Paginator || $data instanceof
+            \Illuminate\Pagination\LengthAwarePaginator)
+            <div class="pagination-container mt-4">
+                <!-- Menggunakan pagination bawaan dengan tema Tailwind -->
+                {{ $data->appends(request()->input())->links('pagination::tailwind') }}
+
+            </div>
             @endif
         </main>
     </div>
 
     <script>
-        function updateRowsPerPage() {
-            const perPage = document.getElementById('rows-per-page').value;
-            const url = new URL(window.location.href);
-            url.searchParams.set('per_page', perPage);
-            window.location.href = url.toString();
-        }
-    </script>
+    function updateRowsPerPage() {
+        const perPage = document.getElementById('rows-per-page').value;
+        const url = new URL(window.location.href);
+        url.searchParams.set('per_page', perPage);
+        window.location.href = url.toString();
+    }
 
+    const openModalButton = document.getElementById('openModalButton');
+    const closeModalButton = document.getElementById('closeModalButton');
+    const modal = document.getElementById('modal');
 
-    <script>
-        const openModalButton = document.getElementById('openModalButton');
-        const closeModalButton = document.getElementById('closeModalButton');
-        const modal = document.getElementById('modal');
+    openModalButton.addEventListener('click', () => {
+        modal.classList.remove('hidden');
+    });
 
-        openModalButton.addEventListener('click', () => {
-            modal.classList.remove('hidden');
-        });
+    closeModalButton.addEventListener('click', () => {
+        modal.classList.add('hidden');
+    });
 
-        closeModalButton.addEventListener('click', () => {
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) {
             modal.classList.add('hidden');
-        });
+        }
+    });
 
-        window.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.classList.add('hidden');
-            }
-        });
-    </script>
+    document.getElementById('search-bar').addEventListener('input', function() {
+        const query = this.value;
+        const spinner = document.getElementById('loading-spinner');
 
-    <script>
-        document.getElementById('search-bar').addEventListener('input', function () {
-            const query = this.value;
-            const spinner = document.getElementById('loading-spinner');
+        // Tampilkan spinner
+        spinner.style.display = 'block';
 
-            // Tampilkan spinner
-            spinner.style.display = 'block';
-
-            fetch("{{ route('data.index') }}?search=" + query, {
+        fetch("{{ route('data.index') }}?search=" + query, {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
                 }
             })
-                .then(response => response.text())
-                .then(html => {
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(html, 'text/html');
-                    const updatedTable = doc.querySelector('tbody#data-table');
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const updatedTable = doc.querySelector('tbody#data-table');
 
-                    // Update hanya isi tabel
-                    document.querySelector('tbody#data-table').replaceWith(updatedTable);
+                // Update hanya isi tabel
+                document.querySelector('tbody#data-table').replaceWith(updatedTable);
 
-                    // Sembunyikan spinner
-                    spinner.style.display = 'none';
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    spinner.style.display = 'none';
-                });
-        });
-    </script>
+                // Sembunyikan spinner
+                spinner.style.display = 'none';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                spinner.style.display = 'none';
+            });
+    });
 
-    <script>
-        document.getElementById('rows-per-page').addEventListener('change', function () {
-            const url = new URL(window.location.href);
-            url.searchParams.set('per_page', this.value);
-            window.location.href = url.toString();
-        });
-    </script>
+    document.getElementById('rows-per-page').addEventListener('change', function() {
+        const url = new URL(window.location.href);
+        url.searchParams.set('per_page', this.value);
+        window.location.href = url.toString();
+    });
 
-    <script>
-        document.getElementById('search-bar').addEventListener('input', function () {
-            const query = this.value;
-            const spinner = document.getElementById('loading-spinner');
+    document.getElementById('search-bar').addEventListener('input', function() {
+        const query = this.value;
+        const spinner = document.getElementById('loading-spinner');
 
-            // Tampilkan spinner
-            spinner.style.display = 'block';
+        // Tampilkan spinner
+        spinner.style.display = 'block';
 
-            const perPage = document.getElementById('rows-per-page').value; // Ambil nilai per page yang terpilih
-            const url = new URL(window.location.href);
-            url.searchParams.set('search', query); // Tambahkan parameter search
-            url.searchParams.set('per_page', perPage); // Tambahkan parameter per_page
+        const perPage = document.getElementById('rows-per-page').value; // Ambil nilai per page yang terpilih
+        const url = new URL(window.location.href);
+        url.searchParams.set('search', query); // Tambahkan parameter search
+        url.searchParams.set('per_page', perPage); // Tambahkan parameter per_page
 
-            fetch(url.toString(), {
+        fetch(url.toString(), {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
                 }
             })
-                .then(response => response.text())
-                .then(html => {
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(html, 'text/html');
-                    const updatedTable = doc.querySelector('tbody#data-table');
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const updatedTable = doc.querySelector('tbody#data-table');
 
-                    // Update hanya isi tabel
-                    document.querySelector('tbody#data-table').replaceWith(updatedTable);
+                // Update hanya isi tabel
+                document.querySelector('tbody#data-table').replaceWith(updatedTable);
 
-                    // Sembunyikan spinner
-                    spinner.style.display = 'none';
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    spinner.style.display = 'none';
-                });
-        });
-
+                // Sembunyikan spinner
+                spinner.style.display = 'none';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                spinner.style.display = 'none';
+            });
+    });
     </script>
 </x-app-layout>

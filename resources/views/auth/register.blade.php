@@ -15,8 +15,10 @@
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                             <i class="fa fa-user text-gray-400"></i>
                         </span>
-                        <x-text-input id="name" class="w-full pl-10 p-2 border rounded-lg focus:outline-none focus:ring focus:ring-[#E3CAA5]" 
-                                      type="text" name="name" :value="old('name')" placeholder="Nama lengkap" required autofocus />
+                        <x-text-input id="name"
+                            class="w-full pl-10 p-2 border rounded-lg focus:outline-none focus:ring focus:ring-[#E3CAA5]"
+                            type="text" name="name" :value="old('name')" placeholder="Nama lengkap" required
+                            autofocus />
                         <x-input-error :messages="$errors->get('name')" class="mt-2" />
                     </div>
                 </div>
@@ -28,8 +30,9 @@
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                             <i class="fa fa-envelope text-gray-400"></i>
                         </span>
-                        <x-text-input id="email" class="w-full pl-10 p-2 border rounded-lg focus:outline-none focus:ring focus:ring-[#E3CAA5]" 
-                                      type="email" name="email" :value="old('email')" placeholder="Email" required />
+                        <x-text-input id="email"
+                            class="w-full pl-10 p-2 border rounded-lg focus:outline-none focus:ring focus:ring-[#E3CAA5]"
+                            type="email" name="email" :value="old('email')" placeholder="Email" required />
                         <x-input-error :messages="$errors->get('email')" class="mt-2" />
                     </div>
                 </div>
@@ -41,8 +44,9 @@
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                             <i class="fa fa-lock text-gray-400"></i>
                         </span>
-                        <x-text-input id="password" class="w-full pl-10 p-2 border rounded-lg focus:outline-none focus:ring focus:ring-[#E3CAA5]" 
-                                      type="password" name="password" placeholder="Kata sandi" required />
+                        <x-text-input id="password"
+                            class="w-full pl-10 p-2 border rounded-lg focus:outline-none focus:ring focus:ring-[#E3CAA5]"
+                            type="password" name="password" placeholder="Kata sandi" required />
                         <x-input-error :messages="$errors->get('password')" class="mt-2" />
                     </div>
                 </div>
@@ -54,16 +58,16 @@
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                             <i class="fa fa-lock text-gray-400"></i>
                         </span>
-                        <x-text-input id="password_confirmation" class="w-full pl-10 p-2 border rounded-lg focus:outline-none focus:ring focus:ring-[#E3CAA5]" 
-                                      type="password" name="password_confirmation" placeholder="Konfirmasi kata sandi" required />
+                        <x-text-input id="password_confirmation"
+                            class="w-full pl-10 p-2 border rounded-lg focus:outline-none focus:ring focus:ring-[#E3CAA5]"
+                            type="password" name="password_confirmation" placeholder="Konfirmasi kata sandi" required />
                         <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
                     </div>
                 </div>
 
                 <!-- Tombol Register -->
                 <div>
-                    <button type="submit"
-                        class="w-full p-2 text-white rounded-lg"
+                    <button type="submit" class="w-full p-2 text-white rounded-lg"
                         style="background-color: #E3CAA5; hover:bg-[#d3b995]; transition: 300ms;">
                         Daftar
                     </button>
@@ -72,7 +76,7 @@
 
             <!-- Link ke Login -->
             <p class="mt-4 text-sm text-center text-gray-600">
-                Sudah punya akun? 
+                Sudah punya akun?
                 <a href="{{ route('login') }}" class="text-[#E3CAA5] hover:underline">Masuk di sini</a>
             </p>
         </div>

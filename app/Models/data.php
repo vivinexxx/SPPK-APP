@@ -18,22 +18,33 @@ class data extends Model
         parent::boot();
 
         static::creating(function ($data) {
+            // Cari data terakhir berdasarkan id_data
             $latestData = static::latest('id_data')->first();
-
+    
+            // Tentukan ID berikutnya
             if (!$latestData) {
-                $nextIdNumber = 1;
+                $nextIdNumber = 515; // ID awal jika tabel kosong
             } else {
+                // Ambil angka setelah "DT" dan tambahkan 1
                 $lastId = (int) str_replace('DT', '', $latestData->id_data);
                 $nextIdNumber = $lastId + 1;
             }
-
-            $data->id_data = 'ADM' . $nextIdNumber;
+    
+            // Pastikan ID baru unik
+            do {
+                $newId = 'DT' . $nextIdNumber;
+                $exists = static::where('id_data', $newId)->exists(); // Cek apakah ID sudah ada
+                if ($exists) {
+                    $nextIdNumber++; // Tambah angka jika duplikat
+                }
+            } while ($exists);
+    
+            $data->id_data = $newId; // Set ID unik
         });
     }
 
     protected $fillable = [
         'id_data',
-        'id_admin',
         'provinsi',
         'kab_kota',
         'presentase_pm',
@@ -44,7 +55,7 @@ class data extends Model
     public function up()
     {
         Schema::create('data', function (Blueprint $table) {
-            $table->id('id_data');
+            $table->string('id_data')->primary();
             $table->string('provinsi');
             $table->string('kab_kota');
             $table->decimal('persentase_pm', 5, 2);
@@ -55,7 +66,10 @@ class data extends Model
         });
     }
 
-
+    public function down()
+    {
+        Schema::dropIfExists('data');
+    }
     public function analisis()
     {
         return $this->hasMany(Analisis::class, 'id_data', 'id_data');
