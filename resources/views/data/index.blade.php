@@ -14,7 +14,8 @@ table thead th {
     z-index: 1;
 }
 
-th, td {
+th,
+td {
     text-align: left;
     padding: 8px;
     border: 1px solid #ddd;
@@ -124,9 +125,10 @@ table {
                     <select id="rows-per-page"
                         class="border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring focus:ring-[#CEAB93] w-60"
                         onchange="updateRowsPerPage()">
-                        <option value="all" {{ request()->input('per_page') == 'all' ? 'selected' : '' }}>Tampilkan Semua</option>
+                        <option value="all" {{ request()->input('per_page') == 'all' ? 'selected' : '' }}>Tampilkan
+                            Semua</option>
                         @foreach($provinsiList as $prov)
-                            <option value="{{ $prov }}" {{ $provinsi == $prov ? 'selected' : '' }}>{{ $prov }}</option>
+                        <option value="{{ $prov }}" {{ $provinsi == $prov ? 'selected' : '' }}>{{ $prov }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -182,13 +184,13 @@ table {
                                 class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#CEAB93] focus:border-transparent transition-all duration-300">
                         </div>
 
-                      
+
                         <div class="mb-4">
-    <label for="tahun" class="block text-sm font-medium text-gray-700">Tahun</label>
-    <input type="number" name="tahun" id="tahun" required maxlength="4"
-        placeholder="Masukkan tahun"
-        class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#CEAB93] focus:border-transparent transition-all duration-300">
-</div>
+                            <label for="tahun" class="block text-sm font-medium text-gray-700">Tahun</label>
+                            <input type="number" name="tahun" id="tahun" required maxlength="4"
+                                placeholder="Masukkan tahun"
+                                class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#CEAB93] focus:border-transparent transition-all duration-300">
+                        </div>
 
                         <div class="flex justify-end mt-6">
                             <button type="submit"
@@ -208,29 +210,30 @@ table {
     </div>
 
     <script>
-     const tahunInput = document.getElementById('tahun');
+    << << << < HEAD
+    const tahunInput = document.getElementById('tahun');
 
-tahunInput.addEventListener('input', function () {
-    // Hapus karakter yang bukan angka
-    this.value = this.value.replace(/[^0-9]/g, '');
+    tahunInput.addEventListener('input', function() {
+        // Hapus karakter yang bukan angka
+        this.value = this.value.replace(/[^0-9]/g, '');
 
-    // Batasi input hanya 4 angka
-    if (this.value.length > 4) {
-        this.value = this.value.slice(0, 4); // Potong input ke 4 karakter pertama
-    }
-});
+        // Batasi input hanya 4 angka
+        if (this.value.length > 4) {
+            this.value = this.value.slice(0, 4); // Potong input ke 4 karakter pertama
+        }
+    });
 
-tahunInput.addEventListener('keydown', function (event) {
-    // Blokir tombol yang tidak valid seperti minus (-), e, atau plus (+)
-    if (event.key === '-' || event.key === 'e' || event.key === '+') {
-        event.preventDefault();
-    }
-});
-const provinsiInput = document.getElementById('provinsi');
+    tahunInput.addEventListener('keydown', function(event) {
+        // Blokir tombol yang tidak valid seperti minus (-), e, atau plus (+)
+        if (event.key === '-' || event.key === 'e' || event.key === '+') {
+            event.preventDefault();
+        }
+    });
+    const provinsiInput = document.getElementById('provinsi');
     const kabKotaInput = document.getElementById('kab_kota');
 
     function allowOnlyLetters(input) {
-        input.addEventListener('input', function () {
+        input.addEventListener('input', function() {
             // Hapus semua karakter yang bukan huruf atau spasi
             this.value = this.value.replace(/[^a-zA-Z\s]/g, '');
         });
@@ -239,33 +242,34 @@ const provinsiInput = document.getElementById('provinsi');
     // Terapkan validasi ke kedua input
     allowOnlyLetters(provinsiInput);
     allowOnlyLetters(kabKotaInput);
-        // Fungsi untuk mengupdate baris per halaman
-        function updateRowsPerPage() {
-            const rowsPerPage = document.getElementById('rows-per-page').value;
-            const url = new URL(window.location.href);
-            
-            if (rowsPerPage === 'all') {
-                url.searchParams.delete('provinsi');
-            } else {
-                url.searchParams.set('provinsi', rowsPerPage);
-            }
-            
-            window.location.href = url.toString();
+
+    // Fungsi untuk mengupdate baris per halaman
+    function updateRowsPerPage() {
+        const rowsPerPage = document.getElementById('rows-per-page').value;
+        const url = new URL(window.location.href);
+
+        if (rowsPerPage === 'all') {
+            url.searchParams.delete('provinsi');
+        } else {
+            url.searchParams.set('provinsi', rowsPerPage);
         }
 
-        // Fungsi untuk menangani pencarian
-        function handleSearch() {
-            const query = document.getElementById('search-bar').value;
-            const spinner = document.getElementById('loading-spinner');
-            const provinsi = document.getElementById('rows-per-page').value;
-            const url = new URL(window.location.href);
-            
-            url.searchParams.set('search', query);
-            url.searchParams.set('provinsi', provinsi);
-            
-            spinner.style.display = 'block';
+        window.location.href = url.toString();
+    }
 
-            fetch(url.toString(), {
+    // Fungsi untuk menangani pencarian
+    function handleSearch() {
+        const query = document.getElementById('search-bar').value;
+        const spinner = document.getElementById('loading-spinner');
+        const provinsi = document.getElementById('rows-per-page').value;
+        const url = new URL(window.location.href);
+
+        url.searchParams.set('search', query);
+        url.searchParams.set('provinsi', provinsi);
+
+        spinner.style.display = 'block';
+
+        fetch(url.toString(), {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
                 }
@@ -282,23 +286,23 @@ const provinsiInput = document.getElementById('provinsi');
                 console.error('Error:', error);
                 spinner.style.display = 'none';
             });
-        }
+    }
 
-        // Event listeners
-        document.getElementById('search-bar').addEventListener('input', handleSearch);
+    // Event listeners
+    document.getElementById('search-bar').addEventListener('input', handleSearch);
 
-        document.getElementById('openModalButton').addEventListener('click', () => {
-            document.getElementById('modal').classList.remove('hidden');
-        });
+    document.getElementById('openModalButton').addEventListener('click', () => {
+        document.getElementById('modal').classList.remove('hidden');
+    });
 
-        document.getElementById('closeModalButton').addEventListener('click', () => {
+    document.getElementById('closeModalButton').addEventListener('click', () => {
+        document.getElementById('modal').classList.add('hidden');
+    });
+
+    window.addEventListener('click', (e) => {
+        if (e.target === document.getElementById('modal')) {
             document.getElementById('modal').classList.add('hidden');
-        });
-
-        window.addEventListener('click', (e) => {
-            if (e.target === document.getElementById('modal')) {
-                document.getElementById('modal').classList.add('hidden');
-            }
-        });
+        }
+    });
     </script>
 </x-app-layout>

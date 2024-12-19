@@ -116,6 +116,7 @@ class DataController extends Controller
         $data->pengeluaran_perkapita = $request->input('pengeluaran_perkapita');
         $data->tingkat_pengangguran = $request->input('tingkat_pengangguran');
         $data->tahun = $request->input('tahun');
+
         $data->save();
     
         return redirect()->route('data.index');

@@ -51,4 +51,5 @@ class AnalisisController extends Controller
             'provinsiList' => $provinsiList, // Mengirimkan list provinsi ke view
         ]);
     }
+
 }
