@@ -6,63 +6,57 @@ use App\Models\Data;
 use Illuminate\Support\Facades\Http;
 
 class DataController extends Controller
-
 {
     public function index(Request $request)
     {
+        // Ambil input provinsi dan pencarian
+        $provinsi = $request->input('provinsi', 'all'); // Default 'all' jika tidak ada provinsi yang dipilih
         $query = $request->input('search');
-        $perPage = $request->input('per_page', 10); // Default 10 baris per halaman
-        $page = $request->input('page', 1); // Halaman yang aktif, default 1
-        
-        // Jika pengguna memilih "Tampilkan Semua"
-        if ($perPage == 'all') {
-            $data = Data::query()
-                ->when($query, function ($q) use ($query) {
-                    $q->where('provinsi', 'like', "%{$query}%")
-                        ->orWhere('kab_kota', 'like', "%{$query}%");
-                })
-                ->orderBy('provinsi', 'asc') // Urutkan berdasarkan provinsi
-                ->get(); // Ambil semua data
-            $totalData = $data->count(); // Jumlah data yang ditampilkan
-            $totalPages = 1; // Jika semua data ditampilkan, hanya ada 1 halaman
-        } else {
-            // Hitung total data
-            $totalData = Data::query()
-                ->when($query, function ($q) use ($query) {
-                    $q->where('provinsi', 'like', "%{$query}%")
-                        ->orWhere('kab_kota', 'like', "%{$query}%");
-                })
-                ->count();
     
-            // Hitung offset dan data yang diambil berdasarkan halaman
-            $offset = ($page - 1) * $perPage;
-            $data = Data::query()
-                ->when($query, function ($q) use ($query) {
-                    $q->where('provinsi', 'like', "%{$query}%")
-                        ->orWhere('kab_kota', 'like', "%{$query}%");
-                })
-                ->orderBy('provinsi', 'asc') // Urutkan berdasarkan provinsi
-                ->skip($offset)  // Mengambil data sesuai halaman
-                ->take($perPage) // Ambil sejumlah data sesuai per_page
-                ->get();
+        // Ambil data berdasarkan pencarian dan provinsi yang dipilih
+        $data = Data::query()
+            ->when($query, function ($q) use ($query) {
+                $q->where('provinsi', 'like', "%{$query}%")
+                    ->orWhere('kab_kota', 'like', "%{$query}%");
+            })
+            // Filter berdasarkan provinsi jika ada
+            ->when($provinsi !== 'all', function ($q) use ($provinsi) {
+                $q->where('provinsi', $provinsi);
+            })
+            // Urutkan berdasarkan provinsi secara ascending
+            ->orderBy('provinsi', 'asc') // Mengurutkan berdasarkan provinsi
+            ->get(); // Ambil semua data
     
-            // Menghitung total halaman
-            $totalPages = ceil($totalData / $perPage);
+        // Menghapus karakter BOM jika ada
+        foreach ($data as $item) {
+            $item->id_data = trim($item->id_data, "\xEF\xBB\xBF"); // Hapus BOM jika ada
         }
-        
+    
+        $totalData = $data->count(); // Jumlah data yang ditampilkan
+    
         // Hitung jumlah miskin dan tidak miskin dari semua data
         $jumlahMiskin = Data::where('klasifikasi_kemiskinan', 'Miskin')->count();
         $jumlahTidakMiskin = Data::where('klasifikasi_kemiskinan', 'Tidak Miskin')->count();
-        
+    
         // Jika permintaan adalah AJAX, hanya render tabel saja
         if ($request->ajax()) {
-            return view('data.table', compact('data')); // For paginated data
+            return view('data.table', compact('data')); // Return the table view for paginated data
         }
-        
-        // Kirim variabel jumlah miskin dan tidak miskin, serta info paginasi ke tampilan
-        return view('data.index', compact('data', 'jumlahMiskin', 'jumlahTidakMiskin', 'totalData', 'totalPages', 'perPage', 'page'));
+    
+        // Array Provinsi Indonesia
+        $provinsiList = [
+            'Aceh', 'Bali', 'Banten', 'Bengkulu', 'D I Yogyakarta', 'DKI Jakarta', 'Gorontalo', 'Jambi', 'Jawa Barat',
+            'Jawa Tengah', 'Jawa Timur', 'Kalimantan Barat', 'Kalimantan Selatan', 'Kalimantan Tengah', 'Kalimantan Timur',
+            'Kalimantan Utara', 'Kepulauan Riau', 'Lampung', 'Maluku', 'Maluku Utara', 'Nusa Tenggara Barat', 'Nusa Tenggara Timur',
+            'Papua', 'Papua Barat', 'Riau', 'Sulawesi Barat', 'Sulawesi Selatan', 'Sulawesi Tengah', 'Sulawesi Tenggara', 'Sulawesi Utara',
+            'Sumatera Barat', 'Sumatera Selatan', 'Sumatera Utara', 'Bangka Belitung', 'Banten', 'Gorontalo', 'Jakarta', 'Jambi',
+            'Kalimantan', 'Sulawesi', 'Papua', 'Nusa Tenggara', 'Maluku', 'Sumatra'
+        ];
+    
+        return view('data.index', compact('data', 'provinsiList', 'provinsi', 'jumlahMiskin', 'jumlahTidakMiskin', 'totalData'));
     }
     
+
     public function store(Request $request)
     {
         // Validasi Input
@@ -113,31 +107,17 @@ class DataController extends Controller
     // Fungsi untuk menyimpan perubahan data
     public function update(Request $request, $id_data)
     {
-        // Validasi Input
-        $validated = $request->validate([
-            'provinsi' => 'required|string|max:100',
-            'kab_kota' => 'required|string|max:100',
-            'presentase_pm' => 'required|numeric',
-            'pengeluaran_perkapita' => 'required|numeric',
-            'tingkat_pengangguran' => 'required|numeric',
-        ]);
-
-        // Ambil data berdasarkan ID, bukan seluruh koleksi
         $data = Data::findOrFail($id_data);
-
-        // Update hanya kolom yang bisa diedit
         $data->provinsi = $request->input('provinsi');
         $data->kab_kota = $request->input('kab_kota');
         $data->presentase_pm = $request->input('presentase_pm');
         $data->pengeluaran_perkapita = $request->input('pengeluaran_perkapita');
         $data->tingkat_pengangguran = $request->input('tingkat_pengangguran');
-
-        // Simpan perubahan
         $data->save();
-
-        // Redirect dengan pesan sukses
-        return redirect()->route('data.index')->with('success', 'Data berhasil diperbarui.');
+    
+        return redirect()->route('data.index');
     }
+    
 
     public function create()
     {
@@ -155,5 +135,12 @@ class DataController extends Controller
 
         return redirect()->route('data.index')->with('success', 'Data berhasil dihapus.');
     }
+
+    public function show($id_data)
+    {
+        $data = Data::findOrFail($id_data);
+        return view('data.show', compact('data'));
+    }
+
 
 }

@@ -71,84 +71,79 @@
         </tbody>
     </table>
 
-    <!-- Edit Modal -->
-    <div id="editModal" class="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center hidden">
-        <div class="bg-white rounded-lg w-96 p-6 shadow-lg relative">
-            <div class="flex justify-between items-center border-b pb-2">
-                <h2 class="text-xl font-bold text-gray-700">Edit Data</h2>
-                <button id="closeModal" class="text-gray-400 hover:text-gray-700">
-                    <i class="fa fa-times"></i>
+    <!-- Modal Edit -->
+<div id="editModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+    <div class="bg-white rounded-lg shadow-lg p-8 w-1/3 max-w-md">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-800">Edit Data</h2>
+            <button id="closeEditModalButton" class="text-gray-500 hover:text-gray-700">
+                <i class="fa fa-times text-lg"></i>
+            </button>
+        </div>
+        <form id="editForm" action="{{ route('data.update', ':id') }}" method="POST">
+            @csrf
+            @method('PUT') <!-- Menggunakan PUT untuk update data -->
+            <input type="hidden" name="id_data" id="edit_id_data"> <!-- ID yang dikirim untuk update -->
+            <div class="mb-4">
+                <label for="edit_provinsi" class="block text-sm font-medium text-gray-700">Provinsi</label>
+                <input type="text" name="provinsi" id="edit_provinsi" required class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#CEAB93] focus:border-transparent transition-all duration-300">
+            </div>
+            <div class="mb-4">
+                <label for="edit_kab_kota" class="block text-sm font-medium text-gray-700">Kabupaten/Kota</label>
+                <input type="text" name="kab_kota" id="edit_kab_kota" required class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#CEAB93] focus:border-transparent transition-all duration-300">
+            </div>
+            <div class="mb-4">
+                <label for="edit_presentase_pm" class="block text-sm font-medium text-gray-700">Persentase Penduduk Miskin (%)</label>
+                <input type="number" name="presentase_pm" id="edit_presentase_pm" step="0.01" required class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#CEAB93] focus:border-transparent transition-all duration-300">
+            </div>
+            <div class="mb-4">
+                <label for="edit_pengeluaran_perkapita" class="block text-sm font-medium text-gray-700">Pengeluaran per Kapita (Rupiah)</label>
+                <input type="number" name="pengeluaran_perkapita" id="edit_pengeluaran_perkapita" required class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#CEAB93] focus:border-transparent transition-all duration-300">
+            </div>
+            <div class="mb-4">
+                <label for="edit_tingkat_pengangguran" class="block text-sm font-medium text-gray-700">Tingkat Pengangguran Terbuka (%)</label>
+                <input type="number" name="tingkat_pengangguran" id="edit_tingkat_pengangguran" step="0.01" required class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#CEAB93] focus:border-transparent transition-all duration-300">
+            </div>
+            <div class="flex justify-end mt-6">
+                <button type="submit" class="bg-[#CEAB93] text-white font-semibold px-6 py-3 rounded-md shadow-md hover:bg-[#d2b897] transition-colors duration-200">
+                    Simpan
                 </button>
             </div>
-
-            <form id="editForm" action="" method="POST">
-                @csrf
-                @method('PUT')
-
-                <div class="mb-4">
-                    <label for="provinsi" class="block text-sm font-medium text-gray-700">Provinsi</label>
-                    <input type="text" id="provinsi" name="provinsi"
-                        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-500 focus:border-indigo-500">
-                </div>
-
-                <div class="mb-4">
-                    <label for="kab_kota" class="block text-sm font-medium text-gray-700">Kabupaten/Kota</label>
-                    <input type="text" id="kab_kota" name="kab_kota"
-                        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-500 focus:border-indigo-500">
-                </div>
-
-                <div class="mb-4">
-                    <label for="presentase_pm" class="block text-sm font-medium text-gray-700">Presentase Penduduk
-                        Miskin (%)</label>
-                    <input type="number" step="0.01" id="presentase_pm" name="presentase_pm"
-                        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-500 focus:border-indigo-500">
-                </div>
-
-                <div class="mb-4">
-                    <label for="pengeluaran_perkapita" class="block text-sm font-medium text-gray-700">Pengeluaran per
-                        Kapita</label>
-                    <input type="number" id="pengeluaran_perkapita" name="pengeluaran_perkapita"
-                        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-500 focus:border-indigo-500">
-                </div>
-
-                <div class="mb-4">
-                    <label for="tingkat_pengangguran" class="block text-sm font-medium text-gray-700">Tingkat
-                        Pengangguran Terbuka (%)</label>
-                    <input type="number" step="0.01" id="tingkat_pengangguran" name="tingkat_pengangguran"
-                        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-500 focus:border-indigo-500">
-                </div>
-
-                <div class="flex justify-end">
-                    <button type="submit"
-                        class="bg-[#CEAB93] text-white font-semibold px-6 py-3 rounded-md shadow-md hover:bg-[#d2b897] transition-colors duration-200">Simpan</button>
-                </div>
-            </form>
-        </div>
+        </form>
     </div>
 </div>
-
 <!-- JavaScript -->
 <script>
-    document.querySelectorAll('.edit-button').forEach(button => {
-        button.addEventListener('click', () => {
-            const modal = document.getElementById('editModal');
-            modal.classList.remove('hidden');
+// Ambil semua tombol edit dan atur event listener
+document.querySelectorAll('.edit-button').forEach(button => {
+    button.addEventListener('click', (e) => {
+        const idData = button.getAttribute('data-id');
+        const provinsi = button.getAttribute('data-provinsi');
+        const kabKota = button.getAttribute('data-kab_kota');
+        const presentasePm = button.getAttribute('data-presentase_pm');
+        const pengeluaranPerkapita = button.getAttribute('data-pengeluaran_perkapita');
+        const tingkatPengangguran = button.getAttribute('data-tingkat_pengangguran');
 
-            // Isi formulir dengan data dari atribut
-            document.getElementById('provinsi').value = button.getAttribute('data-provinsi');
-            document.getElementById('kab_kota').value = button.getAttribute('data-kab_kota');
-            document.getElementById('presentase_pm').value = button.getAttribute('data-presentase_pm');
-            document.getElementById('pengeluaran_perkapita').value = button.getAttribute('data-pengeluaran_perkapita');
-            document.getElementById('tingkat_pengangguran').value = button.getAttribute('data-tingkat_pengangguran');
+        // Isi data ke dalam modal Edit
+        document.getElementById('edit_id_data').value = idData;
+        document.getElementById('edit_provinsi').value = provinsi;
+        document.getElementById('edit_kab_kota').value = kabKota;
+        document.getElementById('edit_presentase_pm').value = presentasePm;
+        document.getElementById('edit_pengeluaran_perkapita').value = pengeluaranPerkapita;
+        document.getElementById('edit_tingkat_pengangguran').value = tingkatPengangguran;
 
-            // Atur action form untuk mengarah ke rute update yang sesuai
-            const form = document.getElementById('editForm');
-            form.action = '/data/' + button.getAttribute('data-id');
-        });
+        // Ubah action form untuk update data (gantilah :id dengan id_data yang dipilih)
+        const form = document.getElementById('editForm');
+        form.action = form.action.replace(':id', idData);
+
+        // Tampilkan modal Edit
+        document.getElementById('editModal').classList.remove('hidden');
     });
+});
 
-    document.getElementById('closeModal').addEventListener('click', () => {
-        const modal = document.getElementById('editModal');
-        modal.classList.add('hidden');
-    });
+// Event listener untuk menutup modal Edit
+document.getElementById('closeEditModalButton').addEventListener('click', () => {
+    document.getElementById('editModal').classList.add('hidden');
+});
+
 </script>
