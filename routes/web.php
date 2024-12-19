@@ -30,7 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/data', [DataController::class, 'index'])->name('data.index'); // Menampilkan data
     Route::get('/data/create', [DataController::class, 'create'])->name('data.create'); // Menampilkan form tambah data
     Route::post('/data', [DataController::class, 'store'])->name('data.store'); // Menyimpan data
-    Route::get('/data/{id_data}/edit', [DataController::class, 'edit'])->name('data.edit');
+    Route::get('/data/{id_data}/edit', [DataController::class, 'edit'])->name('data.update');
 
     Route::patch('/data/{id_data}', [DataController::class, 'update'])->name('data.update'); // Mengupdate data
     Route::delete('/data/{id_data}', [DataController::class, 'destroy'])->name('data.destroy'); // Menghapus data

@@ -62,6 +62,7 @@ table {
     /* Lebar kolom tetap */
     border-collapse: collapse;
     margin-top: 10px;
+    height: 200px;
 }
 
 /* Gaya tambahan untuk pencarian */
@@ -77,17 +78,6 @@ table {
     text-align: center;
     font-size: 14px;
     color: gray;
-}
-
-.pagination-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    margin-top: 20px;
-    font-size: 14px;
-    flex-wrap: wrap;
-    /* Responsif untuk layar kecil */
 }
 </style>
 
@@ -129,25 +119,6 @@ table {
             <!-- Loading Spinner -->
             <div id="loading-spinner" class="loading-spinner">Memuat data...</div>
 
-
-            <div class="w-full flex justify-between items-center mb-4">
-                <!-- Dropdown untuk baris per halaman -->
-                <div>
-                    <label for="rows-per-page" class="text-gray-600">Tampilkan</label>
-                    <select id="rows-per-page"
-                        class="border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring focus:ring-[#CEAB93] w-60"
-                        onchange="updateRowsPerPage()">
-                        <option value="5" {{ request()->input('per_page') == 5 ? 'selected' : '' }}>5</option>
-                        <option value="10" {{ request()->input('per_page') == 10 ? 'selected' : '' }}>10</option>
-                        <option value="20" {{ request()->input('per_page') == 20 ? 'selected' : '' }}>20</option>
-                        <option value="50" {{ request()->input('per_page') == 50 ? 'selected' : '' }}>50</option>
-                        <option value="all" {{ request()->input('per_page') == 'all' ? 'selected' : '' }}>Tampilkan
-                            Semua
-                        </option>
-                    </select>
-                    <span class="text-gray-600">baris</span>
-                </div>
-            </div>
 
             <!-- Modal -->
             <div id="modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
@@ -213,26 +184,10 @@ table {
             <div class="overflow-x-auto table-container">
                 @include('data.table', ['data' => $data])
             </div>
-            <!-- Pagination -->
-            @if ($data instanceof \Illuminate\Pagination\Paginator || $data instanceof
-            \Illuminate\Pagination\LengthAwarePaginator)
-            <div class="pagination-container mt-4">
-                <!-- Menggunakan pagination bawaan dengan tema Tailwind -->
-                {{ $data->appends(request()->input())->links('pagination::tailwind') }}
-
-            </div>
-            @endif
         </main>
     </div>
 
     <script>
-    function updateRowsPerPage() {
-        const perPage = document.getElementById('rows-per-page').value;
-        const url = new URL(window.location.href);
-        url.searchParams.set('per_page', perPage);
-        window.location.href = url.toString();
-    }
-
     const openModalButton = document.getElementById('openModalButton');
     const closeModalButton = document.getElementById('closeModalButton');
     const modal = document.getElementById('modal');
@@ -279,12 +234,6 @@ table {
                 console.error('Error:', error);
                 spinner.style.display = 'none';
             });
-    });
-
-    document.getElementById('rows-per-page').addEventListener('change', function() {
-        const url = new URL(window.location.href);
-        url.searchParams.set('per_page', this.value);
-        window.location.href = url.toString();
     });
 
     document.getElementById('search-bar').addEventListener('input', function() {

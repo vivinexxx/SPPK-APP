@@ -65,8 +65,11 @@ Route::middleware('auth')->group(function () {
                 Route::get('/data/store', [DataController::class, 'store'])->name('data.store');
 
                 // Route untuk edit data
-                Route::get('/data/{id}/edit', action: [DataController::class, 'edit'])->name('data.edit');
+                Route::get('/data/{id}', [DataController::class, 'edit'])->name('data.edit');
+
+
                 
-                // Route untuk update data
                 Route::put('/data/{id}', [DataController::class, 'update'])->name('data.update');
+
+
 });
