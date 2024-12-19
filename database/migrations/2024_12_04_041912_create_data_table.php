@@ -18,6 +18,7 @@ return new class extends Migration
             $table->float('presentase_pm');
             $table->decimal('pengeluaran_perkapita',16,0);
             $table->float('tingkat_pengangguran');
+            $table->year('tahun');
             $table->string('klasifikasi_kemiskinan',255);
             $table->timestamps();
         });

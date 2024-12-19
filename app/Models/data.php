@@ -50,6 +50,7 @@ class data extends Model
         'presentase_pm',
         'pengeluaran_perkapita',
         'tingkat_pengangguran',
+        'tahun',
         'klasifikasi_kemiskinan',
     ];
     public function up()
@@ -61,6 +62,7 @@ class data extends Model
             $table->decimal('persentase_pm', 5, 2);
             $table->decimal('pengeluaran_perkapita', 16, 2);
             $table->decimal('tingkat_pengangguran', 5, 2);
+            $table->year('tahun'); 
             $table->string('klasifikasi_kemiskinan');
             $table->timestamps();
         });

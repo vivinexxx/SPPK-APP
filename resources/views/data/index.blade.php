@@ -1,27 +1,20 @@
 <style>
 /* Menambahkan scroll khusus untuk tabel */
 .table-container {
-    max-height: 400px;
-    /* Sesuaikan tinggi maksimal tabel sesuai kebutuhan */
+    max-height: 600px;
     overflow-y: auto;
-    /* Hanya scroll tabel vertikal */
     position: relative;
-    /* Membuat container menjadi posisi relatif */
 }
 
 /* Memastikan header tabel tetap terlihat */
 table thead th {
     position: sticky;
     top: 0;
-    /* Menjaga posisi header tetap di atas saat di-scroll */
     background-color: #f3f4f6;
-    /* Warna latar belakang header */
     z-index: 1;
-    /* Pastikan header berada di atas konten tabel */
 }
 
-th,
-td {
+th, td {
     text-align: left;
     padding: 8px;
     border: 1px solid #ddd;
@@ -38,7 +31,7 @@ td {
     background-color: #fff;
 }
 
-/* Jika Anda ingin mengatur tinggi sidebar agar tetap di tempat */
+/* Sidebar */
 .x-sidebar {
     position: sticky;
     top: 0;
@@ -59,10 +52,9 @@ main {
 table {
     width: 100%;
     table-layout: fixed;
-    /* Lebar kolom tetap */
     border-collapse: collapse;
     margin-top: 10px;
-    height: 200px;
+    height: 100%;
 }
 
 /* Gaya tambahan untuk pencarian */
@@ -78,6 +70,16 @@ table {
     text-align: center;
     font-size: 14px;
     color: gray;
+}
+
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+    font-size: 14px;
+    flex-wrap: wrap;
 }
 </style>
 
@@ -103,13 +105,10 @@ table {
 
             <!-- Statistik dan Pencarian -->
             <div class="flex justify-between items-center mb-4">
-                <!-- Statistik -->
                 <div>
                     <strong>Jumlah Miskin:</strong> {{ $jumlahMiskin }} <br>
                     <strong>Jumlah Tidak Miskin:</strong> {{ $jumlahTidakMiskin }}
                 </div>
-
-                <!-- Search Bar -->
                 <div class="relative w-1/3">
                     <input type="text" id="search-bar" placeholder="Cari daerah..."
                         class="border border-gray-300 rounded-md px-4 py-2 w-full focus:outline-none focus:ring focus:ring-[#CEAB93]" />
@@ -119,8 +118,21 @@ table {
             <!-- Loading Spinner -->
             <div id="loading-spinner" class="loading-spinner">Memuat data...</div>
 
+            <!-- Dropdown untuk baris per halaman -->
+            <div class="w-full flex justify-between items-center mb-4">
+                <div>
+                    <select id="rows-per-page"
+                        class="border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring focus:ring-[#CEAB93] w-60"
+                        onchange="updateRowsPerPage()">
+                        <option value="all" {{ request()->input('per_page') == 'all' ? 'selected' : '' }}>Tampilkan Semua</option>
+                        @foreach($provinsiList as $prov)
+                            <option value="{{ $prov }}" {{ $provinsi == $prov ? 'selected' : '' }}>{{ $prov }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
 
-            <!-- Modal -->
+            <!-- Modal Tambah Data -->
             <div id="modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
                 <div class="bg-white rounded-lg shadow-lg p-8 w-1/3 max-w-md">
                     <div class="flex justify-between items-center mb-6">
@@ -170,6 +182,14 @@ table {
                                 class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#CEAB93] focus:border-transparent transition-all duration-300">
                         </div>
 
+                      
+                        <div class="mb-4">
+    <label for="tahun" class="block text-sm font-medium text-gray-700">Tahun</label>
+    <input type="number" name="tahun" id="tahun" required maxlength="4"
+        placeholder="Masukkan tahun"
+        class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#CEAB93] focus:border-transparent transition-all duration-300">
+</div>
+
                         <div class="flex justify-end mt-6">
                             <button type="submit"
                                 class="bg-[#CEAB93] text-white font-semibold px-6 py-3 rounded-md shadow-md hover:bg-[#d2b897] transition-colors duration-200">
@@ -188,32 +208,64 @@ table {
     </div>
 
     <script>
-    const openModalButton = document.getElementById('openModalButton');
-    const closeModalButton = document.getElementById('closeModalButton');
-    const modal = document.getElementById('modal');
+     const tahunInput = document.getElementById('tahun');
 
-    openModalButton.addEventListener('click', () => {
-        modal.classList.remove('hidden');
-    });
+tahunInput.addEventListener('input', function () {
+    // Hapus karakter yang bukan angka
+    this.value = this.value.replace(/[^0-9]/g, '');
 
-    closeModalButton.addEventListener('click', () => {
-        modal.classList.add('hidden');
-    });
+    // Batasi input hanya 4 angka
+    if (this.value.length > 4) {
+        this.value = this.value.slice(0, 4); // Potong input ke 4 karakter pertama
+    }
+});
 
-    window.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            modal.classList.add('hidden');
+tahunInput.addEventListener('keydown', function (event) {
+    // Blokir tombol yang tidak valid seperti minus (-), e, atau plus (+)
+    if (event.key === '-' || event.key === 'e' || event.key === '+') {
+        event.preventDefault();
+    }
+});
+const provinsiInput = document.getElementById('provinsi');
+    const kabKotaInput = document.getElementById('kab_kota');
+
+    function allowOnlyLetters(input) {
+        input.addEventListener('input', function () {
+            // Hapus semua karakter yang bukan huruf atau spasi
+            this.value = this.value.replace(/[^a-zA-Z\s]/g, '');
+        });
+    }
+
+    // Terapkan validasi ke kedua input
+    allowOnlyLetters(provinsiInput);
+    allowOnlyLetters(kabKotaInput);
+        // Fungsi untuk mengupdate baris per halaman
+        function updateRowsPerPage() {
+            const rowsPerPage = document.getElementById('rows-per-page').value;
+            const url = new URL(window.location.href);
+            
+            if (rowsPerPage === 'all') {
+                url.searchParams.delete('provinsi');
+            } else {
+                url.searchParams.set('provinsi', rowsPerPage);
+            }
+            
+            window.location.href = url.toString();
         }
-    });
 
-    document.getElementById('search-bar').addEventListener('input', function() {
-        const query = this.value;
-        const spinner = document.getElementById('loading-spinner');
+        // Fungsi untuk menangani pencarian
+        function handleSearch() {
+            const query = document.getElementById('search-bar').value;
+            const spinner = document.getElementById('loading-spinner');
+            const provinsi = document.getElementById('rows-per-page').value;
+            const url = new URL(window.location.href);
+            
+            url.searchParams.set('search', query);
+            url.searchParams.set('provinsi', provinsi);
+            
+            spinner.style.display = 'block';
 
-        // Tampilkan spinner
-        spinner.style.display = 'block';
-
-        fetch("{{ route('data.index') }}?search=" + query, {
+            fetch(url.toString(), {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
                 }
@@ -223,52 +275,30 @@ table {
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, 'text/html');
                 const updatedTable = doc.querySelector('tbody#data-table');
-
-                // Update hanya isi tabel
                 document.querySelector('tbody#data-table').replaceWith(updatedTable);
-
-                // Sembunyikan spinner
                 spinner.style.display = 'none';
             })
             .catch(error => {
                 console.error('Error:', error);
                 spinner.style.display = 'none';
             });
-    });
+        }
 
-    document.getElementById('search-bar').addEventListener('input', function() {
-        const query = this.value;
-        const spinner = document.getElementById('loading-spinner');
+        // Event listeners
+        document.getElementById('search-bar').addEventListener('input', handleSearch);
 
-        // Tampilkan spinner
-        spinner.style.display = 'block';
+        document.getElementById('openModalButton').addEventListener('click', () => {
+            document.getElementById('modal').classList.remove('hidden');
+        });
 
-        const perPage = document.getElementById('rows-per-page').value; // Ambil nilai per page yang terpilih
-        const url = new URL(window.location.href);
-        url.searchParams.set('search', query); // Tambahkan parameter search
-        url.searchParams.set('per_page', perPage); // Tambahkan parameter per_page
+        document.getElementById('closeModalButton').addEventListener('click', () => {
+            document.getElementById('modal').classList.add('hidden');
+        });
 
-        fetch(url.toString(), {
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(response => response.text())
-            .then(html => {
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-                const updatedTable = doc.querySelector('tbody#data-table');
-
-                // Update hanya isi tabel
-                document.querySelector('tbody#data-table').replaceWith(updatedTable);
-
-                // Sembunyikan spinner
-                spinner.style.display = 'none';
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                spinner.style.display = 'none';
-            });
-    });
+        window.addEventListener('click', (e) => {
+            if (e.target === document.getElementById('modal')) {
+                document.getElementById('modal').classList.add('hidden');
+            }
+        });
     </script>
 </x-app-layout>
