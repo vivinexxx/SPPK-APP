@@ -32,7 +32,7 @@
                 </a>
             </li>
             <li>
-                <a href="#" 
+                <a href="{{ route('analisis.index')}}" 
                    class="block text-gray-800 font-medium hover:bg-[#DAB89C] py-2 px-4 rounded-lg flex items-center">
                     <i class="fa fa-chart-bar mr-2 text-2xl"></i> Hasil Analisis
                 </a>

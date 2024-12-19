@@ -1,6 +1,7 @@
 <?php
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DataController;
+use App\Http\Controllers\AnalisisController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -35,6 +36,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/data/{id_data}', [DataController::class, 'update'])->name('data.update'); // Mengupdate data
     Route::delete('/data/{id_data}', [DataController::class, 'destroy'])->name('data.destroy'); // Menghapus data
 
+    // rute untuk analisis
+    Route::get('/analisis', [AnalisisController::class, 'index'])->name('analisis.index'); // Menampilkan data
+    
     // Rute untuk Profil Pengguna
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

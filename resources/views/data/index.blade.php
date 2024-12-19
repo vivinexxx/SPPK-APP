@@ -1,7 +1,7 @@
 <style>
 /* Menambahkan scroll khusus untuk tabel */
 .table-container {
-    max-height: 400px;
+    max-height: 600px;
     /* Sesuaikan tinggi maksimal tabel sesuai kebutuhan */
     overflow-y: auto;
     /* Hanya scroll tabel vertikal */
@@ -62,6 +62,7 @@ table {
     /* Lebar kolom tetap */
     border-collapse: collapse;
     margin-top: 10px;
+    height: 100%;
 }
 
 /* Gaya tambahan untuk pencarian */
@@ -137,10 +138,6 @@ table {
                     <select id="rows-per-page"
                         class="border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring focus:ring-[#CEAB93] w-60"
                         onchange="updateRowsPerPage()">
-                        <option value="5" {{ request()->input('per_page') == 5 ? 'selected' : '' }}>5</option>
-                        <option value="10" {{ request()->input('per_page') == 10 ? 'selected' : '' }}>10</option>
-                        <option value="20" {{ request()->input('per_page') == 20 ? 'selected' : '' }}>20</option>
-                        <option value="50" {{ request()->input('per_page') == 50 ? 'selected' : '' }}>50</option>
                         <option value="all" {{ request()->input('per_page') == 'all' ? 'selected' : '' }}>Tampilkan
                             Semua
                         </option>
@@ -213,15 +210,6 @@ table {
             <div class="overflow-x-auto table-container">
                 @include('data.table', ['data' => $data])
             </div>
-            <!-- Pagination -->
-            @if ($data instanceof \Illuminate\Pagination\Paginator || $data instanceof
-            \Illuminate\Pagination\LengthAwarePaginator)
-            <div class="pagination-container mt-4">
-                <!-- Menggunakan pagination bawaan dengan tema Tailwind -->
-                {{ $data->appends(request()->input())->links('pagination::tailwind') }}
-
-            </div>
-            @endif
         </main>
     </div>
 
