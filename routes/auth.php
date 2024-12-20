@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnalisisController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
@@ -70,6 +71,8 @@ Route::middleware('auth')->group(function () {
 
                 
                 Route::put('/data/{id}', [DataController::class, 'update'])->name('data.update');
+                Route::get('/analisis', [AnalisisController::class, 'index'])->name('analisis.index');
+
 
 
 });

@@ -210,7 +210,6 @@ table {
     </div>
 
     <script>
-    << << << < HEAD
     const tahunInput = document.getElementById('tahun');
 
     tahunInput.addEventListener('input', function() {

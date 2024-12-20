@@ -37,23 +37,26 @@
             <!-- Memuat Chart.js -->
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
 
             <script>
             // Fungsi untuk mengupdate chart dengan data baru
-            function updateChart(jumlahMiskin, jumlahTidakMiskin) {
+            function updateChart(jumlahTidakMiskin, jumlahMiskin) {
                 const ctx = document.getElementById('pieChart').getContext('2d');
                 if (window.chart) {
-                    window.chart.destroy(); // Menghancurkan chart lama agar tidak ada tumpang tindih
+                    window.chart.destroy(); // Hapus chart lama
                 }
 
                 window.chart = new Chart(ctx, {
                     type: 'pie',
                     data: {
-                        labels: ['Miskin', 'Tidak Miskin'],
+                        labels: ['Tidak Miskin', 'Miskin'],
                         datasets: [{
                             label: 'Persentase Kemiskinan',
-                            data: [jumlahMiskin, jumlahTidakMiskin],
-                            backgroundColor: ['#D91B41', '#2470AF'],
+                            data: [jumlahTidakMiskin, jumlahMiskin],
+                            backgroundColor: ['#2470AF', '#D91B41'],
                             borderColor: ['#fff', '#fff'],
                             borderWidth: 2
                         }]
@@ -82,21 +85,26 @@
                 });
             }
 
-            // Event listener untuk perubahan dropdown provinsi
+            // Event listener untuk dropdown
             $('#provinsi').on('change', function() {
                 var provinsi = $(this).val();
+                console.log("Provinsi terpilih:", provinsi); // Debugging
 
                 if (provinsi) {
                     $.ajax({
-                        url: '{{ route('
-                        analisis.index ') }}',
+                        url: "{{ route('analisis.index') }}",
                         type: 'GET',
                         data: {
                             provinsi: provinsi
                         },
                         success: function(response) {
-                            // Memanggil fungsi updateChart dengan data baru
-                            updateChart(response.jumlahMiskin, response.jumlahTidakMiskin);
+                            console.log(response); // Debugging respons server
+                            const tidakMiskin = response.jumlahTidakMiskin || 0;
+                            const miskin = response.jumlahMiskin || 0;
+                            updateChart(tidakMiskin, miskin);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("AJAX Error:", error); // Debugging jika AJAX gagal
                         }
                     });
                 }
@@ -104,15 +112,10 @@
 
             // Initial chart dengan data default
             window.onload = function() {
-                updateChart({
-                    {
-                        $jumlahMiskin
-                    }
-                }, {
-                    {
-                        $jumlahTidakMiskin
-                    }
-                });
+                updateChart(
+                    @json($jumlahTidakMiskin),
+                    @json($jumlahMiskin)
+                );
             };
             </script>
 

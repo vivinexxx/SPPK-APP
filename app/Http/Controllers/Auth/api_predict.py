@@ -26,7 +26,8 @@ def predict():
 
     # Prediksi klasifikasi (sesuai input model)
     prediction = model.predict([[presentase_pm, pengeluaran, pengangguran]])
-    result = 'Tidak Miskin' if prediction[0] == 1 else 'Miskin'
+    result = 'Miskin' if prediction[0] == 1 else 'Tidak Miskin'
+
 
     return jsonify({'klasifikasi_kemiskinan': result})
 

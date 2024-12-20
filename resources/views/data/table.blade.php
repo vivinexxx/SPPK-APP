@@ -34,19 +34,17 @@
                 <td class="flexible-column">{{ $item->pengeluaran_perkapita }}</td>
                 <td class="flexible-column">{{ $item->tingkat_pengangguran }}</td>
                 <td class="flexible-column">{{ $item->tahun }}</td>
-
-                <td class="flexible-column">{{ $item->klasifikasi_kemiskinan}}</td>
-
+                <td class="flexible-column">{{ $item->klasifikasi_kemiskinan }}</td>
                 <td class="flexible-column">
                     <!-- Tombol Edit -->
-                    <button> <a href="#" class="text-yellow-600 hover:underline edit-button"
-                            data-id="{{ $item->id_data }}" data-provinsi="{{ $item->provinsi }}"
-                            data-kab_kota="{{ $item->kab_kota }}" data-presentase_pm="{{ $item->presentase_pm }}"
-                            data-pengeluaran_perkapita="{{ $item->pengeluaran_perkapita }}"
-                            data-tingkat_pengangguran="{{ $item->tingkat_pengangguran }}"
-                            data-klasifikasi_kemiskinan="{{ $item->klasifikasi_kemiskinan }}">
-                            <i class="fa fa-edit"></i>
-                        </a></button>
+                    <button class="edit-button text-yellow-600 hover:underline" data-id="{{ $item->id_data }}"
+                        data-provinsi="{{ $item->provinsi }}" data-kab_kota="{{ $item->kab_kota }}"
+                        data-presentase_pm="{{ $item->presentase_pm }}"
+                        data-pengeluaran_perkapita="{{ $item->pengeluaran_perkapita }}"
+                        data-tingkat_pengangguran="{{ $item->tingkat_pengangguran }}" data-tahun="{{ $item->tahun }}"
+                        data-klasifikasi_kemiskinan="{{ $item->klasifikasi_kemiskinan }}">
+                        <i class="fa fa-edit"></i>
+                    </button>
 
                     <!-- Form Hapus -->
                     <form action="{{ route('data.destroy', $item->id_data) }}" method="POST"
@@ -61,14 +59,10 @@
                 </td>
             </tr>
             @empty
-            <!-- Jika Tidak Ada Data -->
             <tr>
-                <td colspan="8" class="text-center text-gray-500 py-3">
-                    Tidak ada data yang ditemukan.
-                </td>
+                <td colspan="9" class="text-center text-gray-500 py-3">Tidak ada data yang ditemukan.</td>
             </tr>
             @endforelse
-
         </tbody>
     </table>
 
@@ -84,82 +78,83 @@
             <form id="editForm" action="{{ route('data.update', ':id') }}" method="POST">
                 @csrf
                 @method('PUT')
-                <!-- Menggunakan PUT untuk update data -->
-                <input type="hidden" name="id_data" id="edit_id_data"> <!-- ID yang dikirim untuk update -->
+                <input type="hidden" name="id_data" id="edit_id_data">
                 <div class="mb-4">
                     <label for="edit_provinsi" class="block text-sm font-medium text-gray-700">Provinsi</label>
                     <input type="text" name="provinsi" id="edit_provinsi" required
-                        class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#CEAB93] focus:border-transparent transition-all duration-300">
+                        class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm">
                 </div>
                 <div class="mb-4">
                     <label for="edit_kab_kota" class="block text-sm font-medium text-gray-700">Kabupaten/Kota</label>
                     <input type="text" name="kab_kota" id="edit_kab_kota" required
-                        class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#CEAB93] focus:border-transparent transition-all duration-300">
+                        class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm">
                 </div>
                 <div class="mb-4">
                     <label for="edit_presentase_pm" class="block text-sm font-medium text-gray-700">Persentase Penduduk
                         Miskin (%)</label>
                     <input type="number" name="presentase_pm" id="edit_presentase_pm" step="0.01" required
-                        class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#CEAB93] focus:border-transparent transition-all duration-300">
+                        class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm">
                 </div>
                 <div class="mb-4">
                     <label for="edit_pengeluaran_perkapita" class="block text-sm font-medium text-gray-700">Pengeluaran
                         per Kapita (Rupiah)</label>
                     <input type="number" name="pengeluaran_perkapita" id="edit_pengeluaran_perkapita" required
-                        class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#CEAB93] focus:border-transparent transition-all duration-300">
+                        class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm">
                 </div>
                 <div class="mb-4">
                     <label for="edit_tingkat_pengangguran" class="block text-sm font-medium text-gray-700">Tingkat
                         Pengangguran Terbuka (%)</label>
                     <input type="number" name="tingkat_pengangguran" id="edit_tingkat_pengangguran" step="0.01" required
-                        class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#CEAB93] focus:border-transparent transition-all duration-300">
+                        class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm">
                 </div>
                 <div class="mb-4">
                     <label for="edit_tahun" class="block text-sm font-medium text-gray-700">Tahun</label>
-                    <input type="number" name="tahun" id="tahun" step="0.01" required
-                        class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#CEAB93] focus:border-transparent transition-all duration-300">
+                    <input type="number" name="tahun" id="edit_tahun" required
+                        class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm">
                 </div>
-                4f6d307ca8537
                 <div class="flex justify-end mt-6">
                     <button type="submit"
-                        class="bg-[#CEAB93] text-white font-semibold px-6 py-3 rounded-md shadow-md hover:bg-[#d2b897] transition-colors duration-200">
-                        Simpan
-                    </button>
+                        class="bg-[#CEAB93] text-white font-semibold px-6 py-3 rounded-md shadow-md hover:bg-[#d2b897] transition-colors duration-200">Simpan</button>
                 </div>
             </form>
         </div>
     </div>
+
     <!-- JavaScript -->
     <script>
     // Ambil semua tombol edit dan atur event listener
     document.querySelectorAll('.edit-button').forEach(button => {
-        button.addEventListener('click', (e) => {
+        button.addEventListener('click', () => {
+            // Ambil data dari atribut tombol
             const idData = button.getAttribute('data-id');
             const provinsi = button.getAttribute('data-provinsi');
             const kabKota = button.getAttribute('data-kab_kota');
             const presentasePm = button.getAttribute('data-presentase_pm');
             const pengeluaranPerkapita = button.getAttribute('data-pengeluaran_perkapita');
             const tingkatPengangguran = button.getAttribute('data-tingkat_pengangguran');
+            const tahun = button.getAttribute('data-tahun');
 
-            // Isi data ke dalam modal Edit
+            // Isi modal dengan data yang diambil
             document.getElementById('edit_id_data').value = idData;
             document.getElementById('edit_provinsi').value = provinsi;
             document.getElementById('edit_kab_kota').value = kabKota;
             document.getElementById('edit_presentase_pm').value = presentasePm;
             document.getElementById('edit_pengeluaran_perkapita').value = pengeluaranPerkapita;
             document.getElementById('edit_tingkat_pengangguran').value = tingkatPengangguran;
+            document.getElementById('edit_tahun').value = tahun;
 
-            // Ubah action form untuk update data (gantilah :id dengan id_data yang dipilih)
+            // Atur action pada form
             const form = document.getElementById('editForm');
             form.action = form.action.replace(':id', idData);
 
-            // Tampilkan modal Edit
+            // Tampilkan modal
             document.getElementById('editModal').classList.remove('hidden');
         });
     });
 
-    // Event listener untuk menutup modal Edit
+    // Tutup modal
     document.getElementById('closeEditModalButton').addEventListener('click', () => {
         document.getElementById('editModal').classList.add('hidden');
     });
     </script>
+</div>

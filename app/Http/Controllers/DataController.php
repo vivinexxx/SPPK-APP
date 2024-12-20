@@ -110,16 +110,42 @@ class DataController extends Controller
     public function update(Request $request, $id_data)
     {
         $data = Data::findOrFail($id_data);
+    
+        // Periksa perubahan pada tiga input utama
+        $isChanged = (
+            $data->presentase_pm != $request->input('presentase_pm') ||
+            $data->pengeluaran_perkapita != $request->input('pengeluaran_perkapita') ||
+            $data->tingkat_pengangguran != $request->input('tingkat_pengangguran')
+        );
+    
+        // Update data utama
         $data->provinsi = $request->input('provinsi');
         $data->kab_kota = $request->input('kab_kota');
         $data->presentase_pm = $request->input('presentase_pm');
         $data->pengeluaran_perkapita = $request->input('pengeluaran_perkapita');
         $data->tingkat_pengangguran = $request->input('tingkat_pengangguran');
         $data->tahun = $request->input('tahun');
-
+    
+        if ($isChanged) {
+            // Kirim Data ke Python API jika salah satu nilai berubah
+            $response = Http::post('http://127.0.0.1:5000/predict', [
+                'presentase_pm' => $data->presentase_pm,
+                'pengeluaran_perkapita' => $data->pengeluaran_perkapita,
+                'tingkat_pengangguran' => $data->tingkat_pengangguran,
+            ]);
+    
+            // Periksa respons dari API Python
+            if ($response->ok()) {
+                $predictedClass = $response->json()['klasifikasi_kemiskinan'];
+                $data->klasifikasi_kemiskinan = $predictedClass; // Simpan hasil prediksi
+            } else {
+                return redirect()->route('data.index')->with('error', 'Gagal memperbarui klasifikasi kemiskinan.');
+            }
+        }
+    
         $data->save();
     
-        return redirect()->route('data.index');
+        return redirect()->route('data.index')->with('success', 'Data berhasil diupdate!');
     }
     
 
