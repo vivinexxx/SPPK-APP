@@ -1,84 +1,157 @@
-<x-guest-layout>
-    <!-- Container Utama -->
-    <div class="flex items-center justify-center">
-        <div class="w-full max-w-sm p-6 bg-white">
-            <h2 class="text-2xl font-bold text-center mb-4">Daftar</h2>
+<!DOCTYPE html>
+<html lang="en">
 
-            <!-- Form Register -->
-            <form method="POST" action="{{ route('register') }}">
-                @csrf
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Registrasi Rapi</title>
+    <!-- Import Google Font Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;900&display=swap" rel="stylesheet">
+    <style>
+    /* Global Styles */
+    body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-color: #F5F2EB;
+        font-family: 'Poppins', sans-serif;
+    }
 
-                <!-- Name -->
-                <div class="mb-4">
-                    <label for="name" class="sr-only">Nama Lengkap</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-                            <i class="fa fa-user text-gray-400"></i>
-                        </span>
-                        <x-text-input id="name"
-                            class="w-full pl-10 p-2 border rounded-lg focus:outline-none focus:ring focus:ring-[#E3CAA5]"
-                            type="text" name="name" :value="old('name')" placeholder="Nama lengkap" required
-                            autofocus />
-                        <x-input-error :messages="$errors->get('name')" class="mt-2" />
-                    </div>
-                </div>
+    /* Container Styles */
+    .register-container {
+        width: 360px;
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        padding: 24px;
+        box-sizing: border-box;
+    }
 
-                <!-- Email Address -->
-                <div class="mb-4">
-                    <label for="email" class="sr-only">Email</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-                            <i class="fa fa-envelope text-gray-400"></i>
-                        </span>
-                        <x-text-input id="email"
-                            class="w-full pl-10 p-2 border rounded-lg focus:outline-none focus:ring focus:ring-[#E3CAA5]"
-                            type="email" name="email" :value="old('email')" placeholder="Email" required />
-                        <x-input-error :messages="$errors->get('email')" class="mt-2" />
-                    </div>
-                </div>
+    /* Title Styles */
+    h2 {
+        font-size: 40px;
+        font-weight: 900;
+        text-align: center;
+        color: #000000;
+        margin-bottom: 1.5rem;
+    }
 
-                <!-- Password -->
-                <div class="mb-4">
-                    <label for="password" class="sr-only">Kata Sandi</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-                            <i class="fa fa-lock text-gray-400"></i>
-                        </span>
-                        <x-text-input id="password"
-                            class="w-full pl-10 p-2 border rounded-lg focus:outline-none focus:ring focus:ring-[#E3CAA5]"
-                            type="password" name="password" placeholder="Kata sandi" required />
-                        <x-input-error :messages="$errors->get('password')" class="mt-2" />
-                    </div>
-                </div>
+    /* Form Styles */
+    .input-group {
+        position: relative;
+        margin-bottom: 1.5rem;
+    }
 
-                <!-- Confirm Password -->
-                <div class="mb-4">
-                    <label for="password_confirmation" class="sr-only">Konfirmasi Kata Sandi</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-                            <i class="fa fa-lock text-gray-400"></i>
-                        </span>
-                        <x-text-input id="password_confirmation"
-                            class="w-full pl-10 p-2 border rounded-lg focus:outline-none focus:ring focus:ring-[#E3CAA5]"
-                            type="password" name="password_confirmation" placeholder="Konfirmasi kata sandi" required />
-                        <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-                    </div>
-                </div>
+    .input-group input {
+        width: 100%;
+        padding: 12px 16px 12px 40px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+        font-size: 14px;
+        color: #333;
+        outline: none;
+        transition: border-color 0.3s ease, background-color 0.3s ease;
+        box-sizing: border-box;
+    }
 
-                <!-- Tombol Register -->
-                <div>
-                    <button type="submit" class="w-full p-2 text-white rounded-lg"
-                        style="background-color: #E3CAA5; hover:bg-[#d3b995]; transition: 300ms;">
-                        Daftar
-                    </button>
-                </div>
-            </form>
+    .input-group input:focus {
+        border-color: #c3ad8d;
+        background-color: #fff;
+        box-shadow: 0 0 5px rgba(195, 173, 141, 0.5);
+    }
 
-            <!-- Link ke Login -->
-            <p class="mt-4 text-sm text-center text-gray-600">
-                Sudah punya akun?
-                <a href="{{ route('login') }}" class="text-[#E3CAA5] hover:underline">Masuk di sini</a>
-            </p>
-        </div>
+    .input-group span {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1rem;
+        color: #aaa;
+    }
+
+    /* Button Styles */
+    .register-button {
+        width: 100%;
+        padding: 12px;
+        background-color: #E3CAA5;
+        color: #000;
+        font-size: 16px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .register-button:hover {
+        background-color: #b39979;
+    }
+
+    /* Link Styles */
+    p {
+        margin-top: 1rem;
+        text-align: center;
+        font-size: 0.875rem;
+        color: #555;
+    }
+
+    p a {
+        color: #000;
+        font-weight: bold;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    p a:hover {
+        color: #333;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="register-container">
+        <h2>Daftar</h2>
+        <form method="POST" action="{{ route('register') }}">
+            @csrf
+            <!-- Nama Lengkap -->
+            <div class="input-group">
+                <span>👤</span>
+                <input type="text" name="name" id="name" placeholder="Nama Lengkap" required autofocus />
+            </div>
+
+            <!-- Email -->
+            <div class="input-group">
+                <span>📧</span>
+                <input type="email" name="email" id="email" placeholder="Email" required />
+            </div>
+
+            <!-- Kata Sandi -->
+            <div class="input-group">
+                <span>🔒</span>
+                <input type="password" name="password" id="password" placeholder="Kata sandi" required />
+            </div>
+
+            <!-- Konfirmasi Kata Sandi -->
+            <div class="input-group">
+                <span>🔒</span>
+                <input type="password" name="password_confirmation" id="password_confirmation"
+                    placeholder="Konfirmasi kata sandi" required />
+            </div>
+
+            <!-- Tombol Daftar -->
+            <button type="submit" class="register-button">Daftar</button>
+        </form>
+
+        <!-- Link ke Login -->
+        <p>
+            Sudah punya akun?
+            <a href="{{ route('login') }}">Masuk di sini</a>
+        </p>
     </div>
-</x-guest-layout>
+</body>
+
+</html>

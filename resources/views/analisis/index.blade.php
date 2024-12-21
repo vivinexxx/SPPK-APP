@@ -13,9 +13,9 @@
 
             <div class="flex justify-between items-center mb-4">
                 <!-- Tombol Cari -->
-                <div id="openModalButton"
+                <div
                     class="bg-[#ffffff] border border-gray-300 text-gray font-medium px-4 py-2 rounded-md shadow-md hover:bg-[#DCDCDC] relative w-1/4">
-                    <button>Cari Keputusan</button>
+                    <a href="{{ route('search.index') }}" class="block text-center">Cari Keputusan</a>
                 </div>
 
                 <!-- Dropdown -->

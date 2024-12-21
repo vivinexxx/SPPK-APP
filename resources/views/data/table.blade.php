@@ -5,6 +5,83 @@
     inset: 0;
     background-color: rgba(0, 0, 0, 0.5);
 }
+
+#deleteModal {
+    z-index: 9999;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Abu-abu dengan transparansi */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.3s ease-in-out;
+    /* Transisi halus */
+}
+
+#deleteModal.hidden {
+    opacity: 0;
+    pointer-events: none;
+    /* Agar tidak bisa diinteraksi saat hidden */
+}
+
+.modal-content {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+    /* Untuk memusatkan teks di modal */
+}
+
+.modal-content .button-group {
+    display: flex;
+    justify-content: center;
+    /* Menyelaraskan tombol secara horizontal */
+    gap: 20px;
+    /* Memberikan jarak antar tombol */
+    margin-top: 20px;
+    /* Memberikan jarak antara teks dan tombol */
+}
+
+.modal-content button {
+    width: 100px;
+    /* Ukuran lebar yang sama untuk kedua tombol */
+    height: 40px;
+    /* Ukuran tinggi yang sama */
+    border-radius: 5px;
+    /* Membuat tombol berbentuk rectangle dengan sudut membulat */
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content button#cancelButton {
+    background-color: #f3f3f3;
+    color: #000;
+    border: 1px solid #ccc;
+    transition: all 0.2s ease-in-out;
+}
+
+.modal-content button#cancelButton:hover {
+    background-color: #e0e0e0;
+}
+
+.modal-content button#deleteButton {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    transition: all 0.2s ease-in-out;
+}
+
+.modal-content button#deleteButton:hover {
+    background-color: #ff1f1f;
+}
 </style>
 
 <div class="table-container">
@@ -47,7 +124,7 @@
                     </button>
 
                     <!-- Form Hapus -->
-                    <form action="{{ route('data.destroy', $item->id_data) }}" method="POST"
+                    <!-- <form action="{{ route('data.destroy', $item->id_data) }}" method="POST"
                         style="display: inline-block;">
                         @csrf
                         @method('DELETE')
@@ -55,7 +132,13 @@
                             onclick="return confirm('Yakin ingin menghapus data ini?')">
                             <i class="fa fa-trash"></i>
                         </button>
-                    </form>
+                    </form> -->
+                    <!-- Delete Button -->
+                    <button type="button" class="delete-button text-red-600 hover:underline"
+                        data-action="{{ route('data.destroy', $item->id_data) }}">
+                        <i class="fa fa-trash"></i>
+                    </button>
+
                 </td>
             </tr>
             @empty
@@ -119,6 +202,23 @@
             </form>
         </div>
     </div>
+    <!-- Delete Confirmation Modal -->
+    <!-- Modal Delete -->
+    <div id="deleteModal" class="hidden">
+        <div class="modal-content">
+            <h2 class="text-lg font-bold mb-4 text-center">Yakin ingin menghapus data ini?</h2>
+            <div class="button-group">
+                <button id="cancelButton" class="px-4 py-2">Tidak</button>
+                <form id="deleteForm" method="POST" style="display: inline-block;">
+                    @csrf
+                    @method('DELETE')
+                    <button id="deleteButton" type="submit" class="px-4 py-2">Ya</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
 
     <!-- JavaScript -->
     <script>
@@ -155,6 +255,25 @@
     // Tutup modal
     document.getElementById('closeEditModalButton').addEventListener('click', () => {
         document.getElementById('editModal').classList.add('hidden');
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const deleteButtons = document.querySelectorAll('.delete-button');
+        const deleteModal = document.getElementById('deleteModal');
+        const deleteForm = document.getElementById('deleteForm');
+        const cancelButton = document.getElementById('cancelButton');
+
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const action = button.getAttribute('data-action');
+                deleteForm.setAttribute('action', action);
+                deleteModal.classList.remove('hidden');
+            });
+        });
+
+        cancelButton.addEventListener('click', () => {
+            deleteModal.classList.add('hidden');
+        });
     });
     </script>
 </div>

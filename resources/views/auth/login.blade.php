@@ -1,69 +1,166 @@
-<x-guest-layout>
-    <!-- Container Utama -->
-    <div class="flex items-center justify-center">
-        <div class=" max-w-sm p-6 rounded-lg">
-            <h2 class="text-2xl font-bold text-center mb-4">Masuk</h2>
+<!DOCTYPE html>
+<html lang="en">
 
-            <!-- Session Status -->
-            <x-auth-session-status class="mb-4" :status="session('status')" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Login Rapi</title>
+    <!-- Import Google Font Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;900&display=swap" rel="stylesheet">
+    <style>
+    /* Global Styles */
+    body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-color: #F5F2EB;
 
-            <!-- Form Login -->
-            <form method="POST" action="{{ route('login') }}">
-                @csrf
+        font-family: 'Poppins', sans-serif;
+        /* Font Poppins */
+    }
 
-                <!-- Email Address -->
-                <div class="mb-4">
-                    <label for="email" class="sr-only">Email</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-                            <i class="fa fa-user text-gray-400"></i>
-                        </span>
-                        <x-text-input id="email"
-                            class="w-full pl-10 p-2 border rounded-lg focus:outline-none focus:ring focus:ring-yellow-200"
-                            type="email" name="email" :value="old('email')" placeholder="Email" required autofocus />
-                        <x-input-error :messages="$errors->get('email')" class="mt-2" />
-                    </div>
-                </div>
+    /* Container Styles */
+    .login-container {
+        width: 360px;
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        padding: 24px;
+        box-sizing: border-box;
+    }
 
-                <!-- Password -->
-                <div class="mb-4">
-                    <label for="password" class="sr-only">Kata Sandi</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-                            <i class="fa fa-lock text-gray-400"></i>
-                        </span>
-                        <x-text-input id="password"
-                            class="w-full pl-10 p-2 border rounded-lg focus:outline-none focus:ring focus:ring-yellow-200"
-                            type="password" name="password" placeholder="Kata sandi" required />
-                        <x-input-error :messages="$errors->get('password')" class="mt-2" />
-                    </div>
-                </div>
+    /* Title Styles */
+    h2 {
+        font-size: 40px;
+        font-weight: 900;
+        /* Bold */
+        text-align: center;
+        color: #000000;
+        /* Hitam */
+        margin-bottom: 1.5rem;
+    }
 
-                <!-- Remember Me -->
-                <div class="block mb-4">
-                    <label for="remember_me" class="inline-flex items-center">
-                        <input id="remember_me" type="checkbox"
-                            class="rounded border-gray-300 text-yellow-600 shadow-sm focus:ring-yellow-500"
-                            name="remember">
-                        <span class="ms-2 text-sm text-gray-600">Ingat saya</span>
-                    </label>
-                </div>
+    /* Form Styles */
+    .input-group {
+        position: relative;
+        margin-bottom: 1.5rem;
+    }
 
-                <!-- Tombol Login -->
-                <div>
-                    <button type="submit"
-                        class="w-full p-2 text-white bg-yellow-500 rounded-lg hover:bg-yellow-600 transition duration-300"
-                        style="background-color: #E3CAA5; hover:bg-[#d3b995]; transition: 300ms;">
-                        Masuk
-                    </button>
-                </div>
-            </form>
+    .input-group input {
+        width: 100%;
+        padding: 12px 16px 12px 40px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+        font-size: 14px;
+        color: #333;
+        outline: none;
+        transition: border-color 0.3s ease, background-color 0.3s ease;
+        box-sizing: border-box;
+    }
 
-            <!-- Link ke Registrasi -->
-            <p class="mt-4 text-sm text-center text-gray-600">
-                Belum punya akun?
-                <a href="{{ route('register') }}" class="text-[#E3CAA5] hover:underline">Daftar, yuk!</a>
-            </p>
-        </div>
+    .input-group input:focus {
+        border-color: #c3ad8d;
+        background-color: #fff;
+        box-shadow: 0 0 5px rgba(195, 173, 141, 0.5);
+    }
+
+    .input-group span {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1rem;
+        color: #aaa;
+    }
+
+    /* Button Styles */
+    .login-button {
+        width: 100%;
+        padding: 12px;
+        background-color: #E3CAA5;
+
+        color: #000;
+        /* Warna hitam untuk teks */
+        font-size: 16px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        font-family: 'Poppins', sans-serif;
+        /* Tambahkan ini */
+    }
+
+    .login-button:hover {
+        background-color: #b39979;
+    }
+
+    /* Link Styles */
+    p {
+        margin-top: 1rem;
+        text-align: center;
+        font-size: 0.875rem;
+        color: #555;
+    }
+
+    p a {
+        color: #000;
+        /* Warna hitam */
+        font-weight: bold;
+        /* Bold */
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    p a:hover {
+        color: #333;
+    }
+
+    /* Checkbox Styles */
+    .remember-me {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .remember-me input {
+        margin-right: 8px;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <h2>Masuk</h2>
+        <form method="POST" action="{{ route('login') }}">
+            @csrf
+            <!-- Email -->
+            <div class="input-group">
+                <span>📧</span>
+                <input type="email" name="email" id="email" placeholder="Email" required autofocus />
+            </div>
+            <!-- Password -->
+            <div class="input-group">
+                <span>🔒</span>
+                <input type="password" name="password" id="password" placeholder="Kata sandi" required />
+            </div>
+            <!-- Remember Me -->
+            <div class="remember-me">
+                <input type="checkbox" name="remember" id="remember" />
+                <label for="remember">Ingat saya</label>
+            </div>
+            <!-- Login Button -->
+            <button type="submit" class="login-button">Masuk</button>
+        </form>
+        <!-- Link Registrasi -->
+        <p>
+            Belum punya akun?
+            <a href="{{ route('register') }}">Daftar, yuk!</a>
+        </p>
     </div>
-</x-guest-layout>
+</body>
+
+</html>

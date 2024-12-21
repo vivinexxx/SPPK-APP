@@ -57,6 +57,15 @@ class DataController extends Controller
     }
     
 
+    public function create()
+    {
+        $lastData = Data::latest('id_data')->first(); // Ambil data terakhir
+        $nextId = $lastData ? intval(substr($lastData->id_data, 3)) + 1 : 1; // Ambil angka dari 'DTxxx' lalu tambahkan 1
+        $newId = 'DT' . str_pad($nextId, 3, '0', STR_PAD_LEFT); // Format ulang jadi 'DTxxx'        
+
+        return view('data.create', compact('newId'));
+    }
+    
     public function store(Request $request)
     {
         // Validasi Input
@@ -98,6 +107,7 @@ class DataController extends Controller
 
         return redirect()->route('data.index')->with('success', 'Data berhasil ditambahkan!');
     }
+
 
     public function edit($id_data)
     {
@@ -149,14 +159,7 @@ class DataController extends Controller
     }
     
 
-    public function create()
-    {
-        $lastData = Data::latest('id_data')->first(); // Ambil data terakhir
-        $nextId = $lastData ? intval(substr($lastData->id_data, 3)) + 1 : 1; // Ambil angka dari 'DTxxx' lalu tambahkan 1
-        $newId = 'DT' . str_pad($nextId, 3, '0', STR_PAD_LEFT); // Format ulang jadi 'DTxxx'        
-
-        return view('data.create', compact('newId'));
-    }
+    
 
     public function destroy($id_data)
     {
