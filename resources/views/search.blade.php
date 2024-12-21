@@ -12,23 +12,25 @@
             </div>
 
             <!-- Search Form -->
-            <div class="w-full max-w-md mx-auto">
+            <form id="searchForm" action="{{ route('search.result') }}" method="POST" class="w-full max-w-md mx-auto">
+                @csrf
                 <div class="mb-4">
                     <label for="regionSelect" class="block text-gray-700 font-medium mb-2">Cari daerah yang ingin
                         dilihat</label>
-                    <select id="regionSelect" class="w-full border border-gray-300 rounded-md px-4 py-2">
+                    <select id="regionSelect" name="region" class="w-full border border-gray-300 rounded-md px-4 py-2">
                         <option value="">Pilih wilayah...</option>
-                        <option value="jawa_barat_bandung">Jawa Barat, Bandung</option>
-                        <option value="banten_tangerang">Banten, Tangerang Selatan</option>
-                        <option value="bali_denpasar">Bali, Denpasar</option>
-                        <option value="sumatera_selatan_palembang">Sumatera Selatan, Palembang</option>
+                        @foreach ($regions as $region)
+                            <option value="{{ \Str::slug($region->provinsi . '_' . $region->kab_kota, '_') }}">
+                                {{ $region->provinsi }}, {{ $region->kab_kota }}
+                            </option>
+                        @endforeach
                     </select>
                 </div>
-                <button id="openModalButton"
+                <button type="button" id="openModalButton"
                     class="w-full bg-[#CEAB93] text-white font-medium px-4 py-2 rounded-md hover:bg-[#b2917c]">
                     Cari Keputusan
                 </button>
-            </div>
+            </form>
         </main>
     </div>
 
@@ -37,9 +39,10 @@
         <div class="bg-white rounded-lg shadow-lg w-3/4 max-h-[90vh] overflow-y-auto p-6 relative">
             <!-- Close Button -->
             <button onclick="closeModal()"
-                class="absolute top-4 right-4 text-red-500 text-4xl font-bold p-4 bg-white-100 hover:bg-white-200 rounded-full">
+                class="absolute top-4 right-4 text-red-500 text-2xl font-bold bg-gray-100 hover:bg-gray-200 rounded-full w-8 h-8 flex items-center justify-center">
                 &times;
             </button>
+
             <!-- Modal Content -->
             <div>
                 <!-- Header -->
@@ -101,7 +104,6 @@
                             </tr>
                         </thead>
                         <tbody id="historicalTable">
-                            <!-- Data akan dimuat dinamis berdasarkan pilihan -->
                             <tr>
                                 <td class="border border-gray-300 px-4 py-2">2024</td>
                                 <td class="border border-gray-300 px-4 py-2">Jawa Barat</td>
@@ -120,21 +122,20 @@
     </div>
 
     <script>
-    const modal = document.getElementById("modal");
-    const openModalButton = document.getElementById("openModalButton");
-
-    openModalButton.addEventListener("click", () => {
+        const modal = document.getElementById("modal");
+        const openModalButton = document.getElementById("openModalButton");
         const regionSelect = document.getElementById("regionSelect");
-        const selectedRegion = regionSelect.value;
-        if (selectedRegion) {
-            modal.classList.remove("hidden");
-        } else {
-            alert("Silakan pilih wilayah terlebih dahulu.");
-        }
-    });
 
-    function closeModal() {
-        modal.classList.add("hidden");
-    }
+        openModalButton.addEventListener("click", () => {
+            if (regionSelect.value) {
+                modal.classList.remove("hidden");
+            } else {
+                alert("Silakan pilih wilayah terlebih dahulu.");
+            }
+        });
+
+        function closeModal() {
+            modal.classList.add("hidden");
+        }
     </script>
 </x-app-layout>

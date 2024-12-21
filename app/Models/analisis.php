@@ -16,7 +16,6 @@ class analisis extends Model
     protected $fillable = [
         'id_analisis',
         'id_data',
-        'tanggal_analisis',
         'hasil',
     ];
 

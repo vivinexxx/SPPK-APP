@@ -3,64 +3,72 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\DataController;
+use App\Models\Data;
+use App\Models\Analisis;
 
 class SearchController extends Controller
 {
     public function index()
     {
-        return view('search');
+        // Ambil daftar wilayah unik dari database
+        $regions = Data::select('provinsi', 'kab_kota')
+            ->distinct()
+            ->orderBy('provinsi')
+            ->get();
+
+        return view('search', compact('regions'));
     }
 
     public function searchResult(Request $request)
     {
-        // Tangkap parameter region
-        $region = $request->input('region');
-
-        // Cek apakah parameter ada
-        if ($region) {
-            // Mock data berdasarkan region
-            $data = [
-                'region' => $region,
-                'provinsi' => 'Jawa Barat',
-                'kota' => 'Bandung',
-                'status' => 'Miskin',
-                'keputusan' => 'Dana difokuskan bansos',
-                'historis' => [
-                    [
-                        'tahun' => 2024,
-                        'provinsi' => 'Jawa Barat',
-                        'kota' => 'Bandung',
-                        'penduduk_miskin' => '11,3%',
-                        'pengeluaran' => 8546,
-                        'pengangguran' => '11,65%',
-                        'status' => 'Miskin',
-                        'keputusan' => 'Dana difokuskan Bansos',
-                    ],
-                    [
-                        'tahun' => 2023,
-                        'provinsi' => 'Jawa Barat',
-                        'kota' => 'Bandung',
-                        'penduduk_miskin' => '12,3%',
-                        'pengeluaran' => 8540,
-                        'pengangguran' => '11,67%',
-                        'status' => 'Miskin',
-                        'keputusan' => 'Dana difokuskan Bansos',
-                    ],
-                ],
-            ];
-
-            return view('keputusan', compact('data'));
+        // Validasi input
+        $request->validate([
+            'region' => 'required',
+        ]);
+    
+        // Memisahkan provinsi dan kabupaten/kota
+        [$provinsi, $kab_kota] = explode('_', $request->input('region'));
+    
+        // Ambil data terbaru berdasarkan wilayah
+        $data = Data::where('provinsi', str_replace('_', ' ', $provinsi))
+            ->where('kab_kota', str_replace('_', ' ', $kab_kota))
+            ->orderBy('tahun', 'desc')
+            ->first();
+    
+        if (!$data) {
+            // Jika data tidak ditemukan, kembalikan dengan pesan error
+            return redirect()->route('search.index')->with('error', 'Data wilayah tidak ditemukan.');
         }
-
-        // Jika region kosong, redirect kembali ke halaman search
-        return redirect()->route('search.index')->with('error', 'Silakan pilih wilayah terlebih dahulu.');
+    
+        // Tentukan hasil keputusan
+        $keputusan = ($data->klasifikasi_kemiskinan == 'Miskin')
+            ? 'Dana difokuskan Bansos'
+            : 'Dana difokuskan untuk kepentingan infrastruktur';
+    
+        // Ambil data historis berdasarkan wilayah
+        $historis = Data::where('provinsi', $data->provinsi)
+            ->where('kab_kota', $data->kab_kota)
+            ->orderBy('tahun', 'desc')
+            ->get();
+    
+        // Simpan hasil analisis ke dalam database
+        try {
+            $analisis = new Analisis();
+            $analisis->id_analisis = uniqid('A-'); // Generate ID analisis unik
+            $analisis->id_data = $data->id_data; // ID data terkait
+            $analisis->hasil = $keputusan; // Keputusan analisis
+            $analisis->save(); // Simpan ke database
+    
+            // Redirect dengan pesan sukses
+            return redirect()->route('search.index')->with('success', 'Keputusan berhasil disimpan ke database.');
+        } catch (\Exception $e) {
+            // Tangani error dan kembalikan pesan error
+            return redirect()->route('search.index')->with('error', 'Terjadi kesalahan saat menyimpan keputusan.');
+        }
     }
+    
 
-    // public function getKotaProvinsi() {
-    //     $regions = Data::select('provinsi', 'kab_kota')->distinct()->get();
-    //     return view('search', compact('regions'));
-    // }
+  
     public function chart()
     {
         $data = Data::table('data') // Replace with your table name
@@ -71,3 +79,4 @@ class SearchController extends Controller
         return view('keputusan', compact('data'));
     }
 }
+
